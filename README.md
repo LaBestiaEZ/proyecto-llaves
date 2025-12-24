@@ -59,7 +59,7 @@ Sistema completo con backend en Symfony (API REST) y frontend en Angular, comple
 
 ```powershell
 cd C:\Users\TU_USUARIO\Desktop
-git clone <URL_DEL_REPOSITORIO>
+git clone https://github.com/LaBestiaEZ/proyecto-llaves.git
 cd proyecto-llaves
 ```
 
@@ -323,7 +323,7 @@ docker compose -f docker-compose.prod.yml up -d --build
 1. **Instalar Docker Desktop** (ver arriba)
 2. **Clonar el repositorio**:
    ```powershell
-   git clone <URL_DEL_REPOSITORIO>
+   git clone https://github.com/LaBestiaEZ/proyecto-llaves.git
    cd proyecto-llaves
    ```
 3. **Levantar el proyecto**:

@@ -225,7 +225,7 @@ apt install git -y
 ```bash
 # Clonar en el servidor
 cd /var/www
-git clone <URL_REPOSITORIO> proyecto-llaves
+git clone https://github.com/LaBestiaEZ/proyecto-llaves.git proyecto-llaves
 cd proyecto-llaves
 ```
 

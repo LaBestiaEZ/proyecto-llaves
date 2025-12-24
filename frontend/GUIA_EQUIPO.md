@@ -21,7 +21,7 @@ Esta guía es para los miembros del equipo que trabajarán en el **frontend (Ang
 cd C:\Users\TU_USUARIO\Desktop
 
 # Clona el repositorio
-git clone <URL_DEL_REPOSITORIO>
+git clone https://github.com/LaBestiaEZ/proyecto-llaves.git
 
 # Entra al proyecto
 cd proyecto-llaves
