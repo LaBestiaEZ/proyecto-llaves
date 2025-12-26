@@ -25,12 +25,14 @@ RUN echo "memory_limit = 256M" >> "$PHP_INI_DIR/conf.d/custom.ini" \
     && echo "upload_max_filesize = 50M" >> "$PHP_INI_DIR/conf.d/custom.ini" \
     && echo "post_max_size = 50M" >> "$PHP_INI_DIR/conf.d/custom.ini"
 
-# Configurar OPcache para mejor rendimiento
+# Configurar OPcache para mejor rendimiento en desarrollo
 RUN echo "opcache.enable=1" >> "$PHP_INI_DIR/conf.d/opcache.ini" \
-    && echo "opcache.memory_consumption=128" >> "$PHP_INI_DIR/conf.d/opcache.ini" \
-    && echo "opcache.interned_strings_buffer=8" >> "$PHP_INI_DIR/conf.d/opcache.ini" \
-    && echo "opcache.max_accelerated_files=10000" >> "$PHP_INI_DIR/conf.d/opcache.ini" \
-    && echo "opcache.revalidate_freq=2" >> "$PHP_INI_DIR/conf.d/opcache.ini"
+    && echo "opcache.memory_consumption=256" >> "$PHP_INI_DIR/conf.d/opcache.ini" \
+    && echo "opcache.interned_strings_buffer=16" >> "$PHP_INI_DIR/conf.d/opcache.ini" \
+    && echo "opcache.max_accelerated_files=20000" >> "$PHP_INI_DIR/conf.d/opcache.ini" \
+    && echo "opcache.revalidate_freq=60" >> "$PHP_INI_DIR/conf.d/opcache.ini" \
+    && echo "opcache.fast_shutdown=1" >> "$PHP_INI_DIR/conf.d/opcache.ini" \
+    && echo "opcache.enable_file_override=1" >> "$PHP_INI_DIR/conf.d/opcache.ini"
 
 WORKDIR /var/www/backend
 
