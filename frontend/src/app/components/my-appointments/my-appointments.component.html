@@ -1,0 +1,78 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="bg-white rounded-lg shadow-lg p-8">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-3xl font-bold text-gray-800">📅 Mis Citas</h1>
+      <a routerLink="/appointment" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+        + Agendar Nueva Cita
+      </a>
+    </div>
+
+    @if (isLoading()) {
+      <div class="text-center py-8">
+        <p class="text-gray-600">Cargando citas...</p>
+      </div>
+    } @else if (errorMessage()) {
+      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+        {{ errorMessage() }}
+      </div>
+    } @else if (appointments().length === 0) {
+      <div class="text-center py-12">
+        <p class="text-gray-600 text-lg mb-4">No tienes citas agendadas aún</p>
+        <a routerLink="/appointment" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg">
+          Agendar tu primera cita
+        </a>
+      </div>
+    } @else {
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @for (appointment of appointments(); track appointment.id) {
+          <div class="border rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+            <div class="flex justify-between items-start mb-4">
+              <h2 class="text-xl font-semibold text-gray-800">{{ getServiceTypeLabel(appointment.serviceType!) }}</h2>
+              <span [ngClass]="'px-3 py-1 rounded-full text-sm font-medium ' + getStatusColor(appointment.status!)">
+                {{ getStatusLabel(appointment.status!) }}
+              </span>
+            </div>
+
+            <div class="space-y-3 text-sm">
+              <div>
+                <p class="text-gray-600 font-semibold">Fecha y Hora</p>
+                <p class="text-gray-800">{{ formatDate(appointment.appointmentDate!) }}</p>
+              </div>
+
+              <div>
+                <p class="text-gray-600 font-semibold">Vehículo</p>
+                <p class="text-gray-800">{{ appointment.vehicleMake }} {{ appointment.vehicleModel }} ({{ appointment.vehicleYear }})</p>
+              </div>
+
+              <div>
+                <p class="text-gray-600 font-semibold">Ubicación</p>
+                <p class="text-gray-800">{{ appointment.serviceAddress }}</p>
+              </div>
+
+              <div>
+                <p class="text-gray-600 font-semibold">Contacto</p>
+                <p class="text-gray-800">{{ appointment.customerPhone }}</p>
+              </div>
+
+              @if (appointment.notes) {
+                <div>
+                  <p class="text-gray-600 font-semibold">Notas</p>
+                  <p class="text-gray-800">{{ appointment.notes }}</p>
+                </div>
+              }
+            </div>
+
+            <div class="mt-4 pt-4 border-t flex gap-2">
+              <button class="flex-1 bg-blue-100 hover:bg-blue-200 text-blue-800 px-3 py-2 rounded text-sm font-medium">
+                Editar
+              </button>
+              <button class="flex-1 bg-red-100 hover:bg-red-200 text-red-800 px-3 py-2 rounded text-sm font-medium">
+                Cancelar
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

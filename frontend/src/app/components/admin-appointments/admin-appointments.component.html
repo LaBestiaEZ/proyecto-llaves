@@ -1,0 +1,80 @@
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold mb-8 text-gray-800">Gestión de Citas</h1>
+
+  <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="bg-gray-50 border-b">
+          <tr>
+            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">ID</th>
+            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Cliente</th>
+            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Contacto</th>
+            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Vehículo</th>
+            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Servicio</th>
+            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Fecha</th>
+            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Estado</th>
+            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (appointment of appointments(); track appointment.id) {
+            <tr class="border-b hover:bg-gray-50">
+              <td class="px-4 py-3 text-sm">{{ appointment.id }}</td>
+              <td class="px-4 py-3">
+                <div class="font-medium text-gray-900">{{ appointment.customerName }}</div>
+              </td>
+              <td class="px-4 py-3 text-sm">
+                <div class="text-gray-600">{{ appointment.customerEmail }}</div>
+                <div class="text-gray-500">{{ appointment.customerPhone }}</div>
+              </td>
+              <td class="px-4 py-3 text-sm">
+                <div class="font-medium">{{ appointment.vehicleMake }} {{ appointment.vehicleModel }}</div>
+                @if (appointment.vehicleYear) {
+                  <div class="text-gray-500">{{ appointment.vehicleYear }}</div>
+                }
+              </td>
+              <td class="px-4 py-3 text-sm">
+                <div class="font-medium text-gray-700">{{ appointment.serviceType }}</div>
+                @if (appointment.notes) {
+                  <div class="text-gray-500 text-xs mt-1 max-w-xs truncate" [title]="appointment.notes">
+                    {{ appointment.notes }}
+                  </div>
+                }
+              </td>
+              <td class="px-4 py-3 text-sm">
+                <div>{{ appointment.appointmentDate | date:'short' }}</div>
+                <div class="text-gray-500 text-xs">{{ appointment.serviceAddress }}</div>
+              </td>
+              <td class="px-4 py-3">
+                <select
+                  [value]="appointment.status"
+                  (change)="updateStatus(appointment.id!, $event.target.value)"
+                  [class]="'text-xs px-2 py-1 rounded font-semibold ' + getStatusColor(appointment.status)">
+                  <option value="pending">Pendiente</option>
+                  <option value="confirmed">Confirmada</option>
+                  <option value="in_progress">En Progreso</option>
+                  <option value="completed">Completada</option>
+                  <option value="cancelled">Cancelada</option>
+                </select>
+              </td>
+              <td class="px-4 py-3">
+                <button
+                  (click)="deleteAppointment(appointment.id!)"
+                  class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm transition">
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+          }
+          @if (appointments().length === 0) {
+            <tr>
+              <td colspan="8" class="px-4 py-8 text-center text-gray-500">
+                No hay citas registradas.
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,117 @@
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold mb-8 text-gray-800">Gestión de FAQs</h1>
+
+  <!-- Formulario -->
+  <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+    <h2 class="text-xl font-semibold mb-4 text-gray-800">
+      {{ isEditing() ? 'Editar FAQ' : 'Nueva FAQ' }}
+    </h2>
+    <form (ngSubmit)="saveFaq()" class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Pregunta</label>
+        <input
+          type="text"
+          [value]="currentFaq().question"
+          (input)="handleInputChange($event, 'question')"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+          required>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Respuesta</label>
+        <textarea
+          [value]="currentFaq().answer"
+          (input)="handleInputChange($event, 'answer')"
+          rows="4"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+          required></textarea>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Posición</label>
+          <input
+            type="number"
+            [value]="currentFaq().position"
+            (input)="handleNumberChange($event, 'position')"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            required>
+        </div>
+        <div>
+          <label class="flex items-center gap-2 mt-8">
+            <input
+              type="checkbox"
+              [checked]="currentFaq().active"
+              (change)="handleCheckboxChange($event, 'active')"
+              class="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500">
+            <span class="text-sm font-medium text-gray-700">Activa</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="flex gap-3">
+        <button
+          type="submit"
+          class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold transition">
+          {{ isEditing() ? 'Actualizar' : 'Crear' }}
+        </button>
+        @if (isEditing()) {
+          <button
+            type="button"
+            (click)="resetForm()"
+            class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg font-semibold transition">
+            Cancelar
+          </button>
+        }
+      </div>
+    </form>
+  </div>
+
+  <!-- Lista de FAQs -->
+  <div class="bg-white rounded-lg shadow-lg p-6">
+    <h2 class="text-xl font-semibold mb-4 text-gray-800">FAQs Existentes</h2>
+    <div class="space-y-3">
+      @for (faq of faqs(); track faq.id) {
+        <div class="border rounded-lg p-4 hover:bg-gray-50">
+          <div class="flex justify-between items-start gap-4">
+            <div class="flex-1">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">
+                  Pos: {{ faq.position }}
+                </span>
+                @if (faq.active) {
+                  <span class="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded">
+                    Activa
+                  </span>
+                } @else {
+                  <span class="bg-gray-100 text-gray-800 text-xs font-semibold px-2 py-1 rounded">
+                    Inactiva
+                  </span>
+                }
+              </div>
+              <h3 class="font-semibold text-gray-800 mb-2">{{ faq.question }}</h3>
+              <p class="text-gray-600 text-sm">{{ faq.answer }}</p>
+            </div>
+            <div class="flex gap-2">
+              <button
+                (click)="editFaq(faq)"
+                class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm transition">
+                Editar
+              </button>
+              <button
+                (click)="deleteFaq(faq.id!)"
+                class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm transition">
+                Eliminar
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+      @if (faqs().length === 0) {
+        <div class="text-center text-gray-500 py-8">
+          <p>No hay FAQs registradas.</p>
+        </div>
+      }
+    </div>
+  </div>
+</div>

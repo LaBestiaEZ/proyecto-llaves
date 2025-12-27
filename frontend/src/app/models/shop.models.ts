@@ -39,3 +39,32 @@ export interface CreateOrderDTO {
     quantity: number;
   }[];
 }
+
+export interface Faq {
+  id?: number;
+  question: string;
+  answer: string;
+  position: number;
+  active: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface Appointment {
+  id?: number;
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  appointmentDate: string;
+  serviceAddress: string;
+  vehicleMake: string;
+  vehicleModel: string;
+  vehicleYear?: string;
+  serviceType: string;
+  status: string;
+  price?: string;
+  notes?: string;
+  user?: any;
+  createdAt?: string;
+  updatedAt?: string;
+}

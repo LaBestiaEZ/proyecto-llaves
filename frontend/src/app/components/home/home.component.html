@@ -1,0 +1,86 @@
+<div class="container mx-auto px-4 py-8">
+  <!-- Hero Section -->
+  <div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-lg shadow-xl p-12 mb-12">
+    <div class="max-w-4xl mx-auto text-center">
+      <h1 class="text-5xl font-bold mb-4">🔑 Servicio Profesional de Llaves para Vehículos</h1>
+      <p class="text-xl mb-8">Expertos en duplicado, programación y reparación de llaves de auto. Servicio rápido y a domicilio.</p>
+      <div class="flex gap-4 justify-center">
+        <a routerLink="/appointment" class="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-semibold text-lg shadow-lg transition">
+          📅 Agendar Cita
+        </a>
+        <a routerLink="/products" class="bg-blue-500 hover:bg-blue-400 px-8 py-3 rounded-lg font-semibold text-lg shadow-lg transition">
+          🛒 Ver Productos
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Services Section -->
+  <div class="mb-12">
+    <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">Nuestros Servicios</h2>
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition">
+        <div class="text-4xl mb-4">🔑</div>
+        <h3 class="text-xl font-bold mb-2 text-gray-800">Duplicado de Llaves</h3>
+        <p class="text-gray-600">Copiado de llaves tradicionales y con chip transponder para todo tipo de vehículos.</p>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition">
+        <div class="text-4xl mb-4">💻</div>
+        <h3 class="text-xl font-bold mb-2 text-gray-800">Programación Electrónica</h3>
+        <p class="text-gray-600">Programación de llaves inteligentes y control remoto para marcas premium.</p>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition">
+        <div class="text-4xl mb-4">🏠</div>
+        <h3 class="text-xl font-bold mb-2 text-gray-800">Servicio a Domicilio</h3>
+        <p class="text-gray-600">Vamos a donde estés. Servicio de emergencia 24/7 disponible.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Why Choose Us Section -->
+  <div class="bg-gray-50 rounded-lg p-8 mb-12">
+    <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">¿Por Qué Elegirnos?</h2>
+    <div class="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+      <div class="flex items-start gap-3">
+        <span class="text-2xl">✅</span>
+        <div>
+          <h4 class="font-bold text-lg text-gray-800">Técnicos Certificados</h4>
+          <p class="text-gray-600">Personal capacitado con años de experiencia</p>
+        </div>
+      </div>
+      <div class="flex items-start gap-3">
+        <span class="text-2xl">⚡</span>
+        <div>
+          <h4 class="font-bold text-lg text-gray-800">Servicio Rápido</h4>
+          <p class="text-gray-600">La mayoría de trabajos en menos de 30 minutos</p>
+        </div>
+      </div>
+      <div class="flex items-start gap-3">
+        <span class="text-2xl">🛡️</span>
+        <div>
+          <h4 class="font-bold text-lg text-gray-800">Garantía Incluida</h4>
+          <p class="text-gray-600">Todos nuestros servicios tienen garantía</p>
+        </div>
+      </div>
+      <div class="flex items-start gap-3">
+        <span class="text-2xl">💰</span>
+        <div>
+          <h4 class="font-bold text-lg text-gray-800">Precios Competitivos</h4>
+          <p class="text-gray-600">Mejor relación calidad-precio del mercado</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQs Section -->
+  <app-faq-section></app-faq-section>
+
+  <!-- CTA Section -->
+  <div class="bg-blue-600 text-white rounded-lg shadow-xl p-8 text-center">
+    <h2 class="text-3xl font-bold mb-4">¿Necesitas nuestros servicios?</h2>
+    <p class="text-lg mb-6">Agenda tu cita ahora y resuelve tu problema de llaves hoy mismo</p>
+    <a routerLink="/appointment" class="inline-block bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-semibold text-lg shadow-lg transition">
+      Agendar Ahora
+    </a>
+  </div>
+</div>

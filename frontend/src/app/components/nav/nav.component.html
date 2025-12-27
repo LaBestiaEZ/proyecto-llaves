@@ -1,0 +1,65 @@
+<nav class="bg-blue-600 text-white shadow-lg">
+  <div class="container mx-auto px-4">
+    <div class="flex items-center justify-between h-16">
+      <div class="flex items-center space-x-8">
+        <a routerLink="/" class="text-xl font-bold">🔑 Sistema de Llaves</a>
+        <div class="flex space-x-4">
+          <a routerLink="/products" class="hover:bg-blue-700 px-3 py-2 rounded">Productos</a>
+          @if (authService.isAuthenticated() && !authService.isAdmin()) {
+            <a routerLink="/orders" class="hover:bg-blue-700 px-3 py-2 rounded">Mis Pedidos</a>
+            <a routerLink="/my-appointments" class="hover:bg-blue-700 px-3 py-2 rounded">Mis Citas</a>
+          }
+          @if (authService.isAdmin()) {
+            <div class="relative">
+              <button 
+                (click)="toggleAdminMenu()" 
+                class="hover:bg-blue-700 px-3 py-2 rounded flex items-center gap-1">
+                Admin ▾
+              </button>
+              @if (showAdminMenu()) {
+                <div class="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-10">
+                  <a 
+                    routerLink="/admin/products" 
+                    (click)="closeAdminMenu()"
+                    class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Productos</a>
+                  <a 
+                    routerLink="/admin/orders" 
+                    (click)="closeAdminMenu()"
+                    class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Pedidos</a>
+                  <a 
+                    routerLink="/admin/faqs" 
+                    (click)="closeAdminMenu()"
+                    class="block px-4 py-2 text-gray-800 hover:bg-gray-100">FAQs</a>
+                  <a 
+                    routerLink="/admin/appointments" 
+                    (click)="closeAdminMenu()"
+                    class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Citas</a>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+      <div class="flex items-center gap-4">
+        @if (authService.isAuthenticated()) {
+          @if (!authService.isAdmin()) {
+            <a routerLink="/cart" class="flex items-center gap-2 bg-blue-700 hover:bg-blue-800 px-4 py-2 rounded">
+              🛒 Carrito ({{ cartService.itemCount() }})
+            </a>
+          }
+          <span class="text-sm">{{ authService.currentUser()?.email }}</span>
+          <button (click)="logout()" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded">
+            Cerrar Sesión
+          </button>
+        } @else {
+          <a routerLink="/cart" class="flex items-center gap-2 bg-blue-700 hover:bg-blue-800 px-4 py-2 rounded">
+            🛒 Carrito ({{ cartService.itemCount() }})
+          </a>
+          <a routerLink="/login" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded">
+            Iniciar Sesión
+          </a>
+        }
+      </div>
+    </div>
+  </div>
+</nav>
