@@ -1,22 +1,37 @@
-FROM php:8.3-fpm
+FROM php:8.3-fpm-alpine
 
 WORKDIR /var/www/backend
 
-# Instalar dependencias
-RUN apt-get update && apt-get install -y \
-    libpq-dev \
+# Instalar dependencias del sistema
+RUN apk add --no-cache \
+    postgresql-dev \
     git \
     curl \
+    nginx \
+    supervisor \
     && docker-php-ext-install pdo_pgsql
 
-# Copiar código
-COPY backend/ .
-
-# Instalar composer
+# Instalar Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Copiar archivos del proyecto
+COPY backend/ .
 
 # Instalar dependencias PHP
 RUN composer install --no-dev --optimize-autoloader
 
-# Comando para correr la app
-CMD ["php-fpm"]
+# Copiar configuración de Nginx
+COPY docker/nginx/nginx.prod.conf /etc/nginx/nginx.conf
+
+# Copiar script de inicio
+COPY docker/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Crear directorio para logs
+RUN mkdir -p /var/log/nginx
+
+# Exponer puerto
+EXPOSE 8080 9000
+
+# Comando para ejecutar
+CMD ["/entrypoint.sh"]
