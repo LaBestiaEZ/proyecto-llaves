@@ -1,2 +1,2 @@
-release: ./backend/bin/console doctrine:migrations:migrate --no-interaction
-web: docker compose -f docker-compose.prod.yml up
+release: cd backend && php bin/console doctrine:migrations:migrate --no-interaction
+web: cd backend && php-fpm -D && nginx -g "daemon off;"

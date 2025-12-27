@@ -1,5 +1,5 @@
 {
   "builder": "dockerfile",
-  "buildCommand": "docker compose -f docker-compose.prod.yml build",
-  "startCommand": "docker compose -f docker-compose.prod.yml up"
+  "buildCommand": "",
+  "startCommand": "sh -c 'cd backend && php bin/console doctrine:migrations:migrate --no-interaction && php-fpm -D && nginx -g \"daemon off;\"'"
 }
