@@ -6,6 +6,8 @@
 /backend/.env.*.local
 /backend/public/bundles/
 /backend/symfony.lock
+# NO ignorar .env porque contiene valores de desarrollo
+# /backend/.env
 
 # Frontend - Angular
 /frontend/node_modules/
@@ -21,8 +23,8 @@
 *.swn
 .DS_Store
 
-# Docker
-.env
+# Docker - NO ignorar .env del root porque tiene valores de desarrollo
+# .env
 
 # Logs
 *.log
