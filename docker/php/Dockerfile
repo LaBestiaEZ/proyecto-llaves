@@ -48,7 +48,13 @@ COPY backend .
 # Optimizar autoloader
 RUN composer dump-autoload --optimize
 
+# Copiar script de entrypoint
+COPY docker/php/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
 # Permisos
 RUN chown -R www-data:www-data /var/www/backend
 
 EXPOSE 9000
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

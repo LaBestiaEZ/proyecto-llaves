@@ -27,6 +27,7 @@ services:
     container_name: proyecto-llaves-php
     volumes:
       - ./backend:/var/www/backend
+      - ./docker/php/entrypoint-dev.sh:/usr/local/bin/entrypoint.sh
     environment:
       DATABASE_URL: "postgresql://llaves_user:llaves_password@db:5432/llaves_db?serverVersion=16&charset=utf8"
       APP_ENV: dev
@@ -36,6 +37,7 @@ services:
         condition: service_healthy
     networks:
       - llaves-network
+    entrypoint: ["/bin/sh", "/usr/local/bin/entrypoint.sh"]
 
   # Nginx para el Backend API
   nginx:
