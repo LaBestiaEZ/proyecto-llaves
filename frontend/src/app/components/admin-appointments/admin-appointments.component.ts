@@ -32,6 +32,13 @@ export class AdminAppointmentsComponent implements OnInit {
     });
   }
 
+  onStatusChange(event: Event, id: number) {
+    const target = event.target as HTMLSelectElement;
+    if (target && target.value) {
+      this.updateStatus(id, target.value);
+    }
+  }
+
   deleteAppointment(id: number) {
     if (confirm('¿Estás seguro de eliminar esta cita?')) {
       this.appointmentService.deleteAppointment(id).subscribe({

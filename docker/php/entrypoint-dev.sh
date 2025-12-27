@@ -1,20 +1,26 @@
 #!/bin/sh
 set -e
 
-echo "🔧 Instalando dependencias de Composer (con dev)..."
+echo "Installing Composer dependencies (with dev)..."
 composer install --optimize-autoloader
 
-echo "🗄️ Creando base de datos si no existe..."
+echo "Creating database if not exists..."
 php bin/console doctrine:database:create --if-not-exists --no-interaction
 
-echo "🗄️ Ejecutando migraciones de base de datos..."
+echo "Running migrations..."
 php bin/console doctrine:migrations:migrate --no-interaction
 
-echo "👤 Creando usuario administrador por defecto..."
-php bin/console app:create-admin || echo "Usuario ya existe o comando no disponible"
+echo "Creating default admin user..."
+php bin/console app:create-admin || echo "User already exists or command not available"
 
-echo "🧹 Limpiando caché de Symfony..."
+echo "Creating sample data..."
+php bin/console app:create-sample-data || echo "Sample data already exists or command not available"
+
+echo "Creating sample products..."
+php bin/console app:create-sample-products || echo "Sample products already exist or command not available"
+
+echo "Clearing cache..."
 php bin/console cache:clear --env=dev
 
-echo "✅ Iniciando PHP-FPM..."
+echo "Starting PHP-FPM..."
 exec php-fpm
