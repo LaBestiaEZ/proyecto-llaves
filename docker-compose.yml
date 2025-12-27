@@ -4,9 +4,9 @@ services:
     image: postgres:16-alpine
     container_name: proyecto-llaves-db
     environment:
-      POSTGRES_DB: llaves_db
-      POSTGRES_USER: llaves_user
-      POSTGRES_PASSWORD: llaves_password
+      POSTGRES_DB: ${POSTGRES_DB:-llaves_db}
+      POSTGRES_USER: ${POSTGRES_USER:-llaves_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-llaves_password}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -14,7 +14,7 @@ services:
     networks:
       - llaves-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U llaves_user -d llaves_db"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-llaves_user} -d ${POSTGRES_DB:-llaves_db}"]
       interval: 10s
       timeout: 5s
       retries: 5
