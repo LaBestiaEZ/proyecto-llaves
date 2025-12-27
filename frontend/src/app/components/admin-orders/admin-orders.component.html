@@ -1,0 +1,69 @@
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold mb-8">Administrar Pedidos</h1>
+
+  @if (loading()) {
+    <div class="text-center py-12">Cargando...</div>
+  } @else {
+    <div class="space-y-4">
+      @for (order of orders(); track order.id) {
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <div class="flex justify-between items-start mb-4">
+            <div>
+              <h3 class="text-lg font-semibold">Pedido #{{ order.id }}</h3>
+              <p class="text-gray-600 text-sm">{{ order.createdAt | date:'dd/MM/yyyy HH:mm' }}</p>
+              <p class="text-gray-600 text-sm">Cliente: {{ order.user?.email || 'N/A' }}</p>
+            </div>
+            <div class="text-right">
+              <select 
+                [(ngModel)]="order.status"
+                (change)="updateStatus(order)"
+                class="px-3 py-2 border rounded"
+                [class]="getStatusClass(order.status)"
+              >
+                <option value="pending">Pendiente</option>
+                <option value="confirmed">Confirmado</option>
+                <option value="shipped">Enviado</option>
+                <option value="completed">Completado</option>
+                <option value="cancelled">Cancelado</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="border-t pt-4">
+            <h4 class="font-semibold mb-2">Productos:</h4>
+            <table class="w-full text-sm">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="text-left p-2">Producto</th>
+                  <th class="text-center p-2">Cantidad</th>
+                  <th class="text-right p-2">Precio</th>
+                  <th class="text-right p-2">Subtotal</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of order.items; track item.id) {
+                  <tr class="border-t">
+                    <td class="p-2">{{ item.product.brand }} {{ item.product.model }}</td>
+                    <td class="text-center p-2">{{ item.quantity }}</td>
+                    <td class="text-right p-2">{{ item.price }}€</td>
+                    <td class="text-right p-2">{{ (parseFloat(item.price) * item.quantity).toFixed(2) }}€</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <div class="border-t mt-4 pt-4 flex justify-between items-center">
+            <button 
+              (click)="deleteOrder(order.id!)"
+              class="text-red-600 hover:text-red-800 text-sm"
+            >
+              Eliminar Pedido
+            </button>
+            <span class="text-xl font-bold">Total: {{ order.total }}€</span>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>
