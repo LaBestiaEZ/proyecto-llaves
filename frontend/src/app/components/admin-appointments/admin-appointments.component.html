@@ -48,7 +48,7 @@
               <td class="px-4 py-3">
                 <select
                   [value]="appointment.status"
-                  (change)="updateStatus(appointment.id!, $event.target.value)"
+                  (change)="onStatusChange($event, appointment.id!)"
                   [class]="'text-xs px-2 py-1 rounded font-semibold ' + getStatusColor(appointment.status)">
                   <option value="pending">Pendiente</option>
                   <option value="confirmed">Confirmada</option>
