@@ -1,0 +1,32 @@
+<!-- FAQs Section -->
+<div class="mb-12">
+  <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">Preguntas Frecuentes</h2>
+  <div class="max-w-3xl mx-auto space-y-4">
+    @if (isLoading()) {
+      <div class="text-center py-8">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+        <p class="text-gray-500 mt-2">Cargando preguntas frecuentes...</p>
+      </div>
+    } @else if (faqs().length > 0) {
+      @for (faq of faqs(); track faq.id) {
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+          <button
+            (click)="toggleFaq(faq.id!)"
+            class="w-full text-left p-5 hover:bg-gray-50 transition flex justify-between items-center">
+            <span class="font-semibold text-gray-800">{{ faq.question }}</span>
+            <span class="text-2xl text-blue-600">{{ expandedFaq() === faq.id ? '−' : '+' }}</span>
+          </button>
+          @if (expandedFaq() === faq.id) {
+            <div class="px-5 pb-5 text-gray-600 border-t">
+              <p class="pt-4">{{ faq.answer }}</p>
+            </div>
+          }
+        </div>
+      }
+    } @else {
+      <div class="text-center text-gray-500 py-8">
+        <p>No hay preguntas frecuentes disponibles en este momento.</p>
+      </div>
+    }
+  </div>
+</div>

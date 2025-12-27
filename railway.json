@@ -1,0 +1,5 @@
+{
+  "builder": "dockerfile",
+  "buildCommand": "docker compose -f docker-compose.prod.yml build",
+  "startCommand": "docker compose -f docker-compose.prod.yml up"
+}
