@@ -22,7 +22,7 @@ FROM node:20-alpine as build
 WORKDIR /app
 
 COPY frontend/package*.json ./
-RUN npm ci --only=production
+RUN npm ci
 
 COPY frontend .
 RUN npm run build -- --configuration production

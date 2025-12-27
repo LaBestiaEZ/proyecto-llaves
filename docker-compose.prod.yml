@@ -54,7 +54,7 @@ services:
       target: production
     container_name: proyecto-llaves-frontend-prod
     ports:
-      - "80:80"
+      - "8000:80"
     networks:
       - llaves-network
     restart: unless-stopped
