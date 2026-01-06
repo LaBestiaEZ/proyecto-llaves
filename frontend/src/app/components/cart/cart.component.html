@@ -79,8 +79,7 @@
 
           <div class="d-grid gap-3">
             <button (click)="checkout()" [disabled]="processing()"
-              class="btn btn-success fw-bold py-3 text-uppercase shadow-lg"
-              style="background: #00f0ff; color: #000; border: none; box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);">
+              class="btn btn-info fw-bold py-3 text-uppercase shadow-lg text-dark border-0">
               @if(processing()) {
               <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Procesando...
               } @else {
