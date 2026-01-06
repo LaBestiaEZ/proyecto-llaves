@@ -1,65 +1,80 @@
-<nav class="bg-blue-600 text-white shadow-lg">
-  <div class="container mx-auto px-4">
-    <div class="flex items-center justify-between h-16">
-      <div class="flex items-center space-x-8">
-        <a routerLink="/" class="text-xl font-bold">🔑 Sistema de Llaves</a>
-        <div class="flex space-x-4">
-          <a routerLink="/products" class="hover:bg-blue-700 px-3 py-2 rounded">Productos</a>
-          @if (authService.isAuthenticated() && !authService.isAdmin()) {
-            <a routerLink="/orders" class="hover:bg-blue-700 px-3 py-2 rounded">Mis Pedidos</a>
-            <a routerLink="/my-appointments" class="hover:bg-blue-700 px-3 py-2 rounded">Mis Citas</a>
-          }
-          @if (authService.isAdmin()) {
-            <div class="relative">
-              <button 
-                (click)="toggleAdminMenu()" 
-                class="hover:bg-blue-700 px-3 py-2 rounded flex items-center gap-1">
-                Admin ▾
-              </button>
-              @if (showAdminMenu()) {
-                <div class="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-10">
-                  <a 
-                    routerLink="/admin/products" 
-                    (click)="closeAdminMenu()"
-                    class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Productos</a>
-                  <a 
-                    routerLink="/admin/orders" 
-                    (click)="closeAdminMenu()"
-                    class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Pedidos</a>
-                  <a 
-                    routerLink="/admin/faqs" 
-                    (click)="closeAdminMenu()"
-                    class="block px-4 py-2 text-gray-800 hover:bg-gray-100">FAQs</a>
-                  <a 
-                    routerLink="/admin/appointments" 
-                    (click)="closeAdminMenu()"
-                    class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Citas</a>
-                </div>
-              }
-            </div>
-          }
-        </div>
-      </div>
-      <div class="flex items-center gap-4">
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+  <div class="container">
+    <a routerLink="/" class="navbar-brand">
+      <i class="bi bi-key-fill text-primary"></i><span class="text-primary">HCC</span>
+    </a>
+
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a routerLink="/products" class="nav-link px-3" routerLinkActive="active">
+            CATÁLOGO
+          </a>
+        </li>
+        @if (authService.isAuthenticated() && !authService.isAdmin()) {
+        <li class="nav-item">
+          <a routerLink="/orders" class="nav-link px-3" routerLinkActive="active">PEDIDOS</a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/my-appointments" class="nav-link px-3" routerLinkActive="active">CITAS</a>
+        </li>
+        }
+        @if (authService.isAdmin()) {
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle px-3" href="#" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            ADMINISTRACIÓN
+          </a>
+          <ul class="dropdown-menu dropdown-menu-dark shadow-lg border-0"
+            style="background: rgba(10,15,30,0.95); backdrop-filter: blur(10px);">
+            <li><a routerLink="/admin/products" class="dropdown-item py-2">PRODUCTOS</a></li>
+            <li><a routerLink="/admin/orders" class="dropdown-item py-2">PEDIDOS</a></li>
+            <li><a routerLink="/admin/faqs" class="dropdown-item py-2">FAQS</a></li>
+            <li><a routerLink="/admin/appointments" class="dropdown-item py-2">CITAS</a></li>
+          </ul>
+        </li>
+        }
+      </ul>
+
+      <div class="d-flex align-items-center gap-3">
         @if (authService.isAuthenticated()) {
-          @if (!authService.isAdmin()) {
-            <a routerLink="/cart" class="flex items-center gap-2 bg-blue-700 hover:bg-blue-800 px-4 py-2 rounded">
-              🛒 Carrito ({{ cartService.itemCount() }})
-            </a>
-          }
-          <span class="text-sm">{{ authService.currentUser()?.email }}</span>
-          <button (click)="logout()" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded">
-            Cerrar Sesión
-          </button>
+        @if (!authService.isAdmin()) {
+        <a routerLink="/cart" class="btn btn-outline-light position-relative border-0"
+          style="background: rgba(255,255,255,0.05)">
+          <i class="bi bi-cart3 fs-5"></i>
+          <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-primary p-1"
+            style="font-size: 0.6rem;">
+            {{ cartService.itemCount() }}
+          </span>
+        </a>
+        }
+        <div class="d-none d-lg-block text-end me-2">
+          <div class="text-light small opacity-50" style="font-size: 0.7rem;">USUARIO</div>
+          <div class="text-primary small fw-bold">{{ authService.currentUser()?.email?.split('@')?.at(0) }}</div>
+        </div>
+        <button (click)="logout()" class="btn btn-outline-danger btn-sm px-3 rounded-pill" style="border-width: 1px;">
+          <i class="bi bi-box-arrow-right"></i>
+        </button>
         } @else {
-          <a routerLink="/cart" class="flex items-center gap-2 bg-blue-700 hover:bg-blue-800 px-4 py-2 rounded">
-            🛒 Carrito ({{ cartService.itemCount() }})
-          </a>
-          <a routerLink="/login" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded">
-            Iniciar Sesión
-          </a>
+        <a routerLink="/cart" class="btn btn-outline-light position-relative border-0 me-2"
+          style="background: rgba(255,255,255,0.05)">
+          <i class="bi bi-cart3 fs-5"></i>
+          <span class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-primary p-1"
+            style="font-size: 0.6rem;">
+            {{ cartService.itemCount() }}
+          </span>
+        </a>
+        <a routerLink="/login" class="btn btn-primary btn-sm px-4 rounded-pill fw-bold">
+          ACCEDER
+        </a>
         }
       </div>
     </div>
   </div>
 </nav>
+<div style="margin-top: 80px;"></div>

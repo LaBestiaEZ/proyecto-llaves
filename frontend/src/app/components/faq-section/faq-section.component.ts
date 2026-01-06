@@ -2,11 +2,12 @@ import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@ang
 import { CommonModule } from '@angular/common';
 import { FaqService } from '../../services/faq.service';
 import { Faq } from '../../models/shop.models';
+import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 
 @Component({
   selector: 'app-faq-section',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, LoadingSpinnerComponent],
   templateUrl: './faq-section.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })

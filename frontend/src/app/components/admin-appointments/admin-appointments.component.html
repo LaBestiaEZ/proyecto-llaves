@@ -1,80 +1,91 @@
-<div class="container mx-auto px-4 py-8">
-  <h1 class="text-3xl font-bold mb-8 text-gray-800">Gestión de Citas</h1>
+<div class="container py-5">
+  <h1 class="h2 fw-bold mb-5 text-uppercase">Gestión de <span class="text-primary">Citas</span></h1>
 
-  <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-    <div class="overflow-x-auto">
-      <table class="w-full">
-        <thead class="bg-gray-50 border-b">
+  @if (loading()) {
+  <app-loading-spinner message="Cargando citas..."></app-loading-spinner>
+  } @else {
+  <div class="glass-pane overflow-hidden">
+    <div class="table-responsive">
+      <table class="table table-dark table-hover mb-0" style="background: transparent;">
+        <thead>
           <tr>
-            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">ID</th>
-            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Cliente</th>
-            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Contacto</th>
-            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Vehículo</th>
-            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Servicio</th>
-            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Fecha</th>
-            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Estado</th>
-            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Acciones</th>
+            <th class="py-3 px-4 text-secondary text-uppercase small">ID</th>
+            <th class="py-3 px-4 text-secondary text-uppercase small">Cliente</th>
+            <th class="py-3 px-4 text-secondary text-uppercase small">Contacto</th>
+            <th class="py-3 px-4 text-secondary text-uppercase small">Vehículo</th>
+            <th class="py-3 px-4 text-secondary text-uppercase small">Servicio</th>
+            <th class="py-3 px-4 text-secondary text-uppercase small">Fecha/Lugar</th>
+            <th class="py-3 px-4 text-secondary text-uppercase small">Estado</th>
+            <th class="py-3 px-4 text-secondary text-uppercase small text-end">Acciones</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="border-top border-secondary border-opacity-25">
           @for (appointment of appointments(); track appointment.id) {
-            <tr class="border-b hover:bg-gray-50">
-              <td class="px-4 py-3 text-sm">{{ appointment.id }}</td>
-              <td class="px-4 py-3">
-                <div class="font-medium text-gray-900">{{ appointment.customerName }}</div>
-              </td>
-              <td class="px-4 py-3 text-sm">
-                <div class="text-gray-600">{{ appointment.customerEmail }}</div>
-                <div class="text-gray-500">{{ appointment.customerPhone }}</div>
-              </td>
-              <td class="px-4 py-3 text-sm">
-                <div class="font-medium">{{ appointment.vehicleMake }} {{ appointment.vehicleModel }}</div>
-                @if (appointment.vehicleYear) {
-                  <div class="text-gray-500">{{ appointment.vehicleYear }}</div>
-                }
-              </td>
-              <td class="px-4 py-3 text-sm">
-                <div class="font-medium text-gray-700">{{ appointment.serviceType }}</div>
-                @if (appointment.notes) {
-                  <div class="text-gray-500 text-xs mt-1 max-w-xs truncate" [title]="appointment.notes">
-                    {{ appointment.notes }}
-                  </div>
-                }
-              </td>
-              <td class="px-4 py-3 text-sm">
-                <div>{{ appointment.appointmentDate | date:'short' }}</div>
-                <div class="text-gray-500 text-xs">{{ appointment.serviceAddress }}</div>
-              </td>
-              <td class="px-4 py-3">
-                <select
-                  [value]="appointment.status"
-                  (change)="onStatusChange($event, appointment.id!)"
-                  [class]="'text-xs px-2 py-1 rounded font-semibold ' + getStatusColor(appointment.status)">
-                  <option value="pending">Pendiente</option>
-                  <option value="confirmed">Confirmada</option>
-                  <option value="in_progress">En Progreso</option>
-                  <option value="completed">Completada</option>
-                  <option value="cancelled">Cancelada</option>
-                </select>
-              </td>
-              <td class="px-4 py-3">
-                <button
-                  (click)="deleteAppointment(appointment.id!)"
-                  class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm transition">
-                  Eliminar
-                </button>
-              </td>
-            </tr>
+          <tr>
+            <td class="py-3 px-4 align-middle font-monospace text-secondary">{{ appointment.id }}</td>
+            <td class="py-3 px-4 align-middle fw-bold">{{ appointment.customerName }}</td>
+            <td class="py-3 px-4 align-middle">
+              <div class="small">
+                <div class="text-light mb-1"><i class="bi bi-envelope me-1"></i> {{ appointment.customerEmail }}</div>
+                <div class="text-secondary"><i class="bi bi-telephone me-1"></i> {{ appointment.customerPhone }}</div>
+              </div>
+            </td>
+            <td class="py-3 px-4 align-middle">
+              <div class="fw-bold">{{ appointment.vehicleMake }} {{ appointment.vehicleModel }}</div>
+              @if (appointment.vehicleYear) {
+              <small class="text-secondary">{{ appointment.vehicleYear }}</small>
+              }
+            </td>
+            <td class="py-3 px-4 align-middle">
+              <div class="text-primary">{{ appointment.serviceType }}</div>
+              @if (appointment.notes) {
+              <small class="text-secondary d-block mt-1 text-truncate" style="max-width: 150px;"
+                [title]="appointment.notes">
+                <i class="bi bi-chat-text me-1"></i> {{ appointment.notes }}
+              </small>
+              }
+            </td>
+            <td class="py-3 px-4 align-middle">
+              <div class="mb-1"><i class="bi bi-calendar-event me-1"></i> {{ appointment.appointmentDate | date:'short'
+                }}</div>
+              <small class="text-secondary"><i class="bi bi-geo-alt me-1"></i> {{ appointment.serviceAddress }}</small>
+            </td>
+            <td class="py-3 px-4 align-middle">
+              <select [value]="appointment.status" (change)="onStatusChange($event, appointment.id!)"
+                class="form-select form-select-sm bg-dark text-white border-secondary" [ngClass]="{
+                    'border-warning text-warning': appointment.status === 'pending',
+                    'border-info text-info': appointment.status === 'confirmed',
+                    'border-primary text-primary': appointment.status === 'in_progress',
+                    'border-success text-success': appointment.status === 'completed',
+                    'border-danger text-danger': appointment.status === 'cancelled'
+                  }" style="width: 140px;">
+                <option value="pending">Pendiente</option>
+                <option value="confirmed">Confirmada</option>
+                <option value="in_progress">En Progreso</option>
+                <option value="completed">Completada</option>
+                <option value="cancelled">Cancelada</option>
+              </select>
+            </td>
+            <td class="py-3 px-4 align-middle text-end">
+              <button (click)="deleteAppointment(appointment.id!)" class="btn btn-sm btn-outline-danger"
+                title="Eliminar">
+                <i class="bi bi-trash"></i>
+              </button>
+            </td>
+          </tr>
           }
           @if (appointments().length === 0) {
-            <tr>
-              <td colspan="8" class="px-4 py-8 text-center text-gray-500">
-                No hay citas registradas.
-              </td>
-            </tr>
+          <tr>
+            <td colspan="8" class="text-center py-5 text-secondary">
+              <i class="bi bi-calendar-x display-6 d-block mb-3 opacity-50"></i>
+              No hay citas registradas.
+            </td>
+          </tr>
           }
         </tbody>
       </table>
     </div>
   </div>
+  }
+
 </div>

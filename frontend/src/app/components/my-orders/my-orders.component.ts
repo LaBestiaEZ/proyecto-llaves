@@ -3,18 +3,19 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { OrderService } from '../../services/order.service';
 import { Order } from '../../models/shop.models';
+import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 
 @Component({
   selector: 'app-my-orders',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, LoadingSpinnerComponent],
   templateUrl: './my-orders.component.html'
 })
 export class MyOrdersComponent implements OnInit {
   orders = signal<Order[]>([]);
   loading = signal(true);
 
-  constructor(private orderService: OrderService) {}
+  constructor(private orderService: OrderService) { }
 
   parseFloat(value: string): number {
     return parseFloat(value);

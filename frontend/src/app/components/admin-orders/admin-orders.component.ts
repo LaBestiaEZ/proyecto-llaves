@@ -3,18 +3,19 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { OrderService } from '../../services/order.service';
 import { Order } from '../../models/shop.models';
+import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 
 @Component({
   selector: 'app-admin-orders',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LoadingSpinnerComponent],
   templateUrl: './admin-orders.component.html'
 })
 export class AdminOrdersComponent implements OnInit {
   orders = signal<Order[]>([]);
   loading = signal(true);
 
-  constructor(private orderService: OrderService) {}
+  constructor(private orderService: OrderService) { }
 
   parseFloat(value: string): number {
     return parseFloat(value);
@@ -25,13 +26,19 @@ export class AdminOrdersComponent implements OnInit {
   }
 
   loadOrders(): void {
+    console.log('Loading orders...');
+    this.loading.set(true);
     this.orderService.getAll().subscribe({
       next: (response) => {
+        console.log('Orders response:', response);
         this.orders.set(response.member);
         this.loading.set(false);
       },
       error: (err) => {
-        console.error('Error:', err);
+        console.error('Error loading orders:', err);
+        console.error('Error status:', err.status);
+        console.error('Error message:', err.message);
+        alert(`Error al cargar pedidos: ${err.message || 'Error desconocido'}`);
         this.loading.set(false);
       }
     });

@@ -1,32 +1,31 @@
 <!-- FAQs Section -->
-<div class="mb-12">
-  <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">Preguntas Frecuentes</h2>
-  <div class="max-w-3xl mx-auto space-y-4">
+<div class="mb-5">
+  <h2 class="text-center mb-5 text-uppercase fw-bold text-white">Preguntas Frecuentes</h2>
+  <div class="mx-auto" style="max-width: 800px;">
     @if (isLoading()) {
-      <div class="text-center py-8">
-        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-        <p class="text-gray-500 mt-2">Cargando preguntas frecuentes...</p>
-      </div>
+    <app-loading-spinner message="Cargando preguntas frecuentes..."></app-loading-spinner>
     } @else if (faqs().length > 0) {
+    <div class="d-grid gap-3">
       @for (faq of faqs(); track faq.id) {
-        <div class="bg-white rounded-lg shadow-md overflow-hidden">
-          <button
-            (click)="toggleFaq(faq.id!)"
-            class="w-full text-left p-5 hover:bg-gray-50 transition flex justify-between items-center">
-            <span class="font-semibold text-gray-800">{{ faq.question }}</span>
-            <span class="text-2xl text-blue-600">{{ expandedFaq() === faq.id ? '−' : '+' }}</span>
-          </button>
-          @if (expandedFaq() === faq.id) {
-            <div class="px-5 pb-5 text-gray-600 border-t">
-              <p class="pt-4">{{ faq.answer }}</p>
-            </div>
-          }
+      <div class="glass-pane overflow-hidden" [class.border-primary]="expandedFaq() === faq.id">
+        <button (click)="toggleFaq(faq.id!)"
+          class="btn w-100 text-start p-4 d-flex justify-content-between align-items-center text-white border-0 bg-transparent">
+          <span class="fw-bold lead mb-0" style="font-size: 1.1rem;">{{ faq.question }}</span>
+          <i class="bi" [class.bi-plus-lg]="expandedFaq() !== faq.id" [class.bi-dash-lg]="expandedFaq() === faq.id"
+            [class.text-primary]="expandedFaq() === faq.id"></i>
+        </button>
+        @if (expandedFaq() === faq.id) {
+        <div class="px-4 pb-4 text-secondary border-top border-secondary border-opacity-25 pt-3">
+          <p class="mb-0">{{ faq.answer }}</p>
         </div>
-      }
-    } @else {
-      <div class="text-center text-gray-500 py-8">
-        <p>No hay preguntas frecuentes disponibles en este momento.</p>
+        }
       </div>
+      }
+    </div>
+    } @else {
+    <div class="glass-pane p-5 text-center">
+      <p class="text-secondary mb-0">No hay preguntas frecuentes disponibles en este momento.</p>
+    </div>
     }
   </div>
 </div>

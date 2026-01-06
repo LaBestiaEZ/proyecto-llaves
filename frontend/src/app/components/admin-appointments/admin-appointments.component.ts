@@ -2,26 +2,36 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { AppointmentService } from '../../services/appointment.service';
 import { Appointment } from '../../models/shop.models';
 import { DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
+import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 
 @Component({
   selector: 'app-admin-appointments',
   standalone: true,
-  imports: [DatePipe],
+  imports: [DatePipe, CommonModule, LoadingSpinnerComponent],
   templateUrl: './admin-appointments.component.html'
 })
 export class AdminAppointmentsComponent implements OnInit {
   private appointmentService = inject(AppointmentService);
-  
+
   appointments = signal<Appointment[]>([]);
+  loading = signal(true);
 
   ngOnInit() {
     this.loadAppointments();
   }
 
   loadAppointments() {
+    this.loading.set(true);
     this.appointmentService.getAppointments().subscribe({
-      next: (appointments) => this.appointments.set(appointments),
-      error: (err) => console.error('Error loading appointments:', err)
+      next: (appointments) => {
+        this.appointments.set(appointments);
+        this.loading.set(false);
+      },
+      error: (err) => {
+        console.error('Error loading appointments:', err);
+        this.loading.set(false);
+      }
     });
   }
 
