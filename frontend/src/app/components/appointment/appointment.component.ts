@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit, effect } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AppointmentService } from '../../services/appointment.service';
@@ -11,7 +11,7 @@ import { Appointment } from '../../models/shop.models';
   imports: [FormsModule],
   templateUrl: './appointment.component.html'
 })
-export class AppointmentComponent implements OnInit {
+export class AppointmentComponent {
   private appointmentService = inject(AppointmentService);
   private authService = inject(AuthService);
   router = inject(Router);
@@ -43,12 +43,6 @@ export class AppointmentComponent implements OnInit {
     { value: 'emergency_opening', label: 'Apertura de Emergencia' },
     { value: 'other', label: 'Otro' }
   ];
-
-  ngOnInit() {
-    if (!this.authService.isAuthenticated()) {
-      this.router.navigate(['/login']);
-    }
-  }
 
   updateField(field: keyof Appointment, value: any) {
     this.appointment.update(app => ({ ...app, [field]: value }));

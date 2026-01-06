@@ -45,12 +45,24 @@ export class AdminOrdersComponent implements OnInit {
   }
 
   updateStatus(order: Order): void {
+    const oldStatus = order.status;
+    
+    // Mensaje especial si se está cancelando el pedido
+    if (order.status === 'cancelled') {
+      if (!confirm('¿Cancelar este pedido? El stock de los productos será devuelto automáticamente.')) {
+        order.status = oldStatus;
+        return;
+      }
+    }
+    
     this.orderService.updateStatus(order.id!, order.status).subscribe({
       next: () => {
-        alert('Estado actualizado correctamente');
+        alert('Estado actualizado correctamente' + (order.status === 'cancelled' ? '. Stock restaurado.' : ''));
+        this.loadOrders();
       },
       error: (err) => {
-        alert('Error al actualizar estado');
+        const errorMsg = err.error?.['hydra:description'] || err.error?.message || 'Error al actualizar estado';
+        alert(errorMsg);
         console.error(err);
         this.loadOrders(); // Recargar para revertir cambio
       }
@@ -58,13 +70,15 @@ export class AdminOrdersComponent implements OnInit {
   }
 
   deleteOrder(id: number): void {
-    if (confirm('¿Estás seguro de eliminar este pedido? Esta acción no se puede deshacer.')) {
+    if (confirm('¿Estás seguro de eliminar este pedido? El stock de los productos será devuelto automáticamente. Esta acción no se puede deshacer.')) {
       this.orderService.delete(id).subscribe({
         next: () => {
+          alert('Pedido eliminado. Stock restaurado correctamente.');
           this.loadOrders();
         },
         error: (err) => {
-          alert('Error al eliminar pedido');
+          const errorMsg = err.error?.['hydra:description'] || err.error?.message || 'Error al eliminar pedido';
+          alert(errorMsg);
           console.error(err);
         }
       });

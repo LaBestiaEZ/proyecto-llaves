@@ -14,7 +14,7 @@ COPY frontend .
 
 EXPOSE 4200
 
-CMD ["npm", "start", "--", "--host", "0.0.0.0"]
+CMD ["npm", "start", "--", "--host", "0.0.0.0", "--poll", "2000"]
 
 # Etapa de build para producción
 FROM node:20-alpine as build

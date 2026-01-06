@@ -1,5 +1,10 @@
 <div class="container py-5">
-  <h1 class="h2 fw-bold mb-5 text-uppercase">Administrar <span class="text-primary">Pedidos</span></h1>
+  <div class="d-flex justify-content-between align-items-center mb-5">
+    <h1 class="h2 fw-bold text-uppercase">Administrar <span class="text-primary">Pedidos</span></h1>
+    <button (click)="loadOrders()" class="btn btn-outline-info d-flex align-items-center gap-2" title="Recargar pedidos">
+      <i class="bi bi-arrow-clockwise"></i> Actualizar
+    </button>
+  </div>
 
   @if (loading()) {
   <app-loading-spinner message="Cargando pedidos..."></app-loading-spinner>

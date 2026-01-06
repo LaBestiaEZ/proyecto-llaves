@@ -14,7 +14,7 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
 export class AdminProductsComponent implements OnInit {
   products = signal<Product[]>([]);
   loading = signal(true);
-  showModal = signal(false);
+  viewMode = signal<'list' | 'form'>('list'); // 'list' para ver productos, 'form' para crear/editar
   editingProduct = signal<Product | null>(null);
 
   formData: any = {
@@ -46,7 +46,7 @@ export class AdminProductsComponent implements OnInit {
     });
   }
 
-  openModal(product?: Product): void {
+  openForm(product?: Product): void {
     if (product) {
       this.editingProduct.set(product);
       this.formData = { ...product };
@@ -62,12 +62,14 @@ export class AdminProductsComponent implements OnInit {
         imageUrl: ''
       };
     }
-    this.showModal.set(true);
+    this.viewMode.set('form');
   }
 
-  closeModal(): void {
-    this.showModal.set(false);
+  closeForm(): void {
+    this.viewMode.set('list');
     this.editingProduct.set(null);
+    // Recargar productos para ver cambios de stock actualizados
+    this.loadProducts();
   }
 
   saveProduct(): void {
@@ -88,7 +90,7 @@ export class AdminProductsComponent implements OnInit {
 
     request.subscribe({
       next: () => {
-        this.closeModal();
+        this.closeForm();
         this.loadProducts();
       },
       error: (err) => {

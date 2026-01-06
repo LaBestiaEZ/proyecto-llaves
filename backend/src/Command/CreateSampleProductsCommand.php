@@ -52,7 +52,7 @@ class CreateSampleProductsCommand extends Command
             $product->setPrice($price);
             $product->setStock($stock);
             $product->setDescription($description);
-            $product->setImageUrl('https://via.placeholder.com/300x200?text=' . urlencode($brand . ' ' . $model));
+            $product->setImageUrl('https://placehold.co/300x200/1a1a1a/ffffff?text=' . urlencode($brand . ' ' . $model));
 
             $this->entityManager->persist($product);
         }
