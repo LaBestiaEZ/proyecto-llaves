@@ -256,11 +256,10 @@ frontend/
 │   │   ├── services/        ← Tus servicios aquí
 │   │   ├── models/          ← Interfaces y modelos
 │   │   └── app.routes.ts    ← Rutas de navegación
-│   ├── styles.css           ← Estilos globales + Tailwind
+│   ├── styles.css           ← Estilos globales + Bootstrap
 │   └── index.html
 ├── angular.json
-├── package.json
-└── tailwind.config.js       ← Configuración de Tailwind
+└── package.json
 ```
 
 ## 🐛 Problemas Comunes
@@ -319,7 +318,7 @@ Si tienes problemas:
 
 - **Git**: https://git-scm.com/book/es/v2
 - **Angular**: https://angular.dev/
-- **Tailwind CSS**: https://tailwindcss.com/docs
+- **Bootstrap**: https://getbootstrap.com/docs/5.3/
 - **TypeScript**: https://www.typescriptlang.org/docs/
 
 ---

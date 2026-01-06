@@ -30,22 +30,36 @@ class OrderProcessor implements ProcessorInterface
             $user = $this->security->getUser();
             $data->setUser($user);
 
-            // Procesar items y verificar stock
+            // PASO 1: Verificar stock de TODOS los productos antes de modificar nada
+            $stockErrors = [];
             foreach ($data->getItems() as $item) {
                 $product = $item->getProduct();
 
-                // Verificar stock disponible
+                if ($item->getQuantity() <= 0) {
+                    throw new BadRequestHttpException('La cantidad debe ser mayor que 0');
+                }
+
                 if ($product->getStock() < $item->getQuantity()) {
-                    throw new BadRequestHttpException(
-                        sprintf(
-                            'Stock insuficiente para %s %s. Disponible: %d, Solicitado: %d',
-                            $product->getBrand(),
-                            $product->getModel(),
-                            $product->getStock(),
-                            $item->getQuantity()
-                        )
+                    $stockErrors[] = sprintf(
+                        '%s %s: disponible %d, solicitado %d',
+                        $product->getBrand(),
+                        $product->getModel(),
+                        $product->getStock(),
+                        $item->getQuantity()
                     );
                 }
+            }
+
+            // Si hay errores de stock, lanzar excepción con todos los errores
+            if (!empty($stockErrors)) {
+                throw new BadRequestHttpException(
+                    'Stock insuficiente para los siguientes productos: ' . implode('; ', $stockErrors)
+                );
+            }
+
+            // PASO 2: Procesar items y actualizar stock
+            foreach ($data->getItems() as $item) {
+                $product = $item->getProduct();
 
                 // Guardar el precio actual del producto
                 $item->setPrice($product->getPrice());

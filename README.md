@@ -294,7 +294,7 @@ docker exec -it proyecto-llaves-php chown -R www-data:www-data /var/www/backend
 
 - **Frontend**:
   - Angular 21
-  - Tailwind CSS 3.4
+  - Bootstrap 5.3
   - TypeScript 5.9
   - Vitest
 

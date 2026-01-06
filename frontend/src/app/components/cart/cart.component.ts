@@ -1,4 +1,4 @@
-import { Component, computed } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 import { CartService } from '../../services/cart.service';
@@ -13,9 +13,9 @@ import { CreateOrderDTO } from '../../models/shop.models';
   templateUrl: './cart.component.html'
 })
 export class CartComponent {
-  processing = computed(() => false);
-  orderMessage = computed(() => '');
-  orderSuccess = computed(() => false);
+  processing = signal(false);
+  orderMessage = signal('');
+  orderSuccess = signal(false);
 
   constructor(
     public cartService: CartService,
@@ -41,11 +41,14 @@ export class CartComponent {
   }
 
   checkout(): void {
+    // Prevenir múltiples clics
+    if (this.processing()) {
+      return;
+    }
+
     // Verificar si está autenticado
     if (!this.authService.isAuthenticated()) {
-      if (confirm('Debes iniciar sesión para realizar un pedido. ¿Deseas ir al login?')) {
-        this.router.navigate(['/login'], { queryParams: { returnUrl: '/cart' } });
-      }
+      this.router.navigate(['/login'], { queryParams: { returnUrl: '/cart' } });
       return;
     }
 
@@ -63,15 +66,45 @@ export class CartComponent {
       }))
     };
 
+    // Activar estado de procesamiento
+    this.processing.set(true);
+    this.orderMessage.set('');
+
     this.orderService.create(orderDTO).subscribe({
       next: (order) => {
+        this.processing.set(false);
+        this.orderSuccess.set(true);
+        this.orderMessage.set('¡Pedido realizado con éxito! Redirigiendo...');
         this.cartService.clear();
-        alert('¡Pedido realizado con éxito! ID: ' + order.id);
-        this.router.navigate(['/orders']);
+        
+        setTimeout(() => {
+          this.router.navigate(['/orders']);
+        }, 1500);
       },
       error: (err) => {
-        alert('Error al realizar el pedido: ' + (err.error?.message || 'Error desconocido'));
-        console.error(err);
+        this.processing.set(false);
+        this.orderSuccess.set(false);
+        
+        // Obtener mensaje de error más detallado
+        let errorMessage = 'Error desconocido';
+        
+        if (err.error) {
+          // API Platform devuelve errores en diferentes formatos
+          if (err.error['hydra:description']) {
+            errorMessage = err.error['hydra:description'];
+          } else if (err.error.message) {
+            errorMessage = err.error.message;
+          } else if (err.error.detail) {
+            errorMessage = err.error.detail;
+          } else if (typeof err.error === 'string') {
+            errorMessage = err.error;
+          }
+        } else if (err.message) {
+          errorMessage = err.message;
+        }
+        
+        this.orderMessage.set(errorMessage);
+        console.error('Error al realizar pedido:', err);
       }
     });
   }
