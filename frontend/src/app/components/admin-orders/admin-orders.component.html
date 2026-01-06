@@ -1,69 +1,84 @@
-<div class="container mx-auto px-4 py-8">
-  <h1 class="text-3xl font-bold mb-8">Administrar Pedidos</h1>
+<div class="container py-5">
+  <h1 class="h2 fw-bold mb-5 text-uppercase">Administrar <span class="text-primary">Pedidos</span></h1>
 
   @if (loading()) {
-    <div class="text-center py-12">Cargando...</div>
+  <app-loading-spinner message="Cargando pedidos..."></app-loading-spinner>
   } @else {
-    <div class="space-y-4">
-      @for (order of orders(); track order.id) {
-        <div class="bg-white rounded-lg shadow-md p-6">
-          <div class="flex justify-between items-start mb-4">
-            <div>
-              <h3 class="text-lg font-semibold">Pedido #{{ order.id }}</h3>
-              <p class="text-gray-600 text-sm">{{ order.createdAt | date:'dd/MM/yyyy HH:mm' }}</p>
-              <p class="text-gray-600 text-sm">Cliente: {{ order.user?.email || 'N/A' }}</p>
-            </div>
-            <div class="text-right">
-              <select 
-                [(ngModel)]="order.status"
-                (change)="updateStatus(order)"
-                class="px-3 py-2 border rounded"
-                [class]="getStatusClass(order.status)"
-              >
-                <option value="pending">Pendiente</option>
-                <option value="confirmed">Confirmado</option>
-                <option value="shipped">Enviado</option>
-                <option value="completed">Completado</option>
-                <option value="cancelled">Cancelado</option>
-              </select>
+  <div class="d-grid gap-4">
+    @for (order of orders(); track order.id) {
+    <div class="card glass-pane border-0">
+      <div class="card-body p-4">
+        <div
+          class="d-flex justify-content-between align-items-start mb-4 border-bottom border-secondary border-opacity-25 pb-3">
+          <div>
+            <h3 class="h5 fw-bold text-uppercase mb-1">
+              <i class="bi bi-box-seam me-2 text-primary"></i>
+              Pedido <span class="text-primary">#{{ order.id }}</span>
+            </h3>
+            <div class="d-flex flex-column gap-1">
+              <small class="text-secondary"><i class="bi bi-calendar-event me-1"></i> {{ order.createdAt |
+                date:'dd/MM/yyyy HH:mm' }}</small>
+              <small class="text-secondary"><i class="bi bi-person me-1"></i> {{ order.user?.email || 'N/A' }}</small>
             </div>
           </div>
+          <div class="d-flex align-items-center gap-3">
+            <select [(ngModel)]="order.status" (change)="updateStatus(order)"
+              class="form-select form-select-sm bg-dark text-white border-secondary" [ngClass]="{
+                    'border-warning text-warning': order.status === 'pending',
+                    'border-info text-info': order.status === 'confirmed',
+                    'border-primary text-primary': order.status === 'shipped',
+                    'border-success text-success': order.status === 'completed',
+                    'border-danger text-danger': order.status === 'cancelled'
+                  }" style="width: 150px;">
+              <option value="pending">Pendiente</option>
+              <option value="confirmed">Confirmado</option>
+              <option value="shipped">Enviado</option>
+              <option value="completed">Completado</option>
+              <option value="cancelled">Cancelado</option>
+            </select>
+          </div>
+        </div>
 
-          <div class="border-t pt-4">
-            <h4 class="font-semibold mb-2">Productos:</h4>
-            <table class="w-full text-sm">
-              <thead class="bg-gray-50">
+        <div class="mb-4">
+          <h4 class="h6 text-secondary text-uppercase mb-3">Productos</h4>
+          <div class="table-responsive">
+            <table class="table table-dark table-sm table-hover mb-0" style="background: transparent;">
+              <thead>
                 <tr>
-                  <th class="text-left p-2">Producto</th>
-                  <th class="text-center p-2">Cantidad</th>
-                  <th class="text-right p-2">Precio</th>
-                  <th class="text-right p-2">Subtotal</th>
+                  <th class="text-secondary border-0 small">Producto</th>
+                  <th class="text-center text-secondary border-0 small">Cantidad</th>
+                  <th class="text-end text-secondary border-0 small">Precio</th>
+                  <th class="text-end text-secondary border-0 small">Subtotal</th>
                 </tr>
               </thead>
               <tbody>
                 @for (item of order.items; track item.id) {
-                  <tr class="border-t">
-                    <td class="p-2">{{ item.product.brand }} {{ item.product.model }}</td>
-                    <td class="text-center p-2">{{ item.quantity }}</td>
-                    <td class="text-right p-2">{{ item.price }}€</td>
-                    <td class="text-right p-2">{{ (parseFloat(item.price) * item.quantity).toFixed(2) }}€</td>
-                  </tr>
+                <tr>
+                  <td class="border-secondary border-opacity-25">{{ item.product.brand }} {{ item.product.model }}</td>
+                  <td class="text-center border-secondary border-opacity-25">{{ item.quantity }}</td>
+                  <td class="text-end border-secondary border-opacity-25">{{ item.price }}€</td>
+                  <td class="text-end border-secondary border-opacity-25 fw-bold text-primary">{{
+                    (parseFloat(item.price) * item.quantity).toFixed(2) }}€</td>
+                </tr>
                 }
               </tbody>
             </table>
           </div>
+        </div>
 
-          <div class="border-t mt-4 pt-4 flex justify-between items-center">
-            <button 
-              (click)="deleteOrder(order.id!)"
-              class="text-red-600 hover:text-red-800 text-sm"
-            >
-              Eliminar Pedido
-            </button>
-            <span class="text-xl font-bold">Total: {{ order.total }}€</span>
+        <div
+          class="d-flex justify-content-between align-items-center pt-3 border-top border-secondary border-opacity-25">
+          <button (click)="deleteOrder(order.id!)" class="btn btn-outline-danger btn-sm">
+            <i class="bi bi-trash me-2"></i> Eliminar Pedido
+          </button>
+          <div class="text-end">
+            <span class="text-secondary me-2 text-uppercase small">Total</span>
+            <span class="h3 mb-0 text-white fw-bold">{{ order.total }}€</span>
           </div>
         </div>
-      }
+      </div>
     </div>
+    }
+  </div>
   }
 </div>

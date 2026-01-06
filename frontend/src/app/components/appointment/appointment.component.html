@@ -1,148 +1,139 @@
 <div class="container mx-auto px-4 py-8 max-w-3xl">
-  <div class="bg-white rounded-lg shadow-lg p-8">
-    <h1 class="text-3xl font-bold mb-2 text-gray-800">📅 Agendar Cita</h1>
-    <p class="text-gray-600 mb-6">Complete el formulario y nos pondremos en contacto con usted para confirmar la cita.</p>
+  <div class="card glass-pane border-0 p-4 p-md-5">
+    <div class="text-center mb-5">
+      <h1 class="h2 fw-bold text-uppercase mb-2"><i class="bi bi-calendar-event me-2 text-primary"></i> Agendar <span
+          class="text-primary">Cita</span></h1>
+      <p class="text-secondary">Complete el formulario para solicitar nuestros servicios expertos.</p>
+    </div>
 
     @if (successMessage()) {
-      <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-        {{ successMessage() }}
-      </div>
+    <div
+      class="alert alert-success bg-success bg-opacity-10 border-success text-success mb-4 d-flex align-items-center">
+      <i class="bi bi-check-circle-fill me-2 fs-4"></i>
+      {{ successMessage() }}
+    </div>
     }
 
     @if (errorMessage()) {
-      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-        {{ errorMessage() }}
-      </div>
+    <div class="alert alert-danger bg-danger bg-opacity-10 border-danger text-danger mb-4 d-flex align-items-center">
+      <i class="bi bi-exclamation-triangle-fill me-2 fs-4"></i>
+      {{ errorMessage() }}
+    </div>
     }
 
-    <form (ngSubmit)="submitAppointment()" class="space-y-6">
+    <form (ngSubmit)="submitAppointment()" class="needs-validation">
       <!-- Información Personal -->
-      <div class="border-b pb-6">
-        <h2 class="text-xl font-semibold mb-4 text-gray-800">Información Personal</h2>
-        <div class="grid md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Nombre Completo *</label>
-            <input
-              type="text"
-              [value]="appointment().customerName"
-              (input)="handleInputChange($event, 'customerName')"
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              required>
+      <div class="mb-5">
+        <h4 class="text-light border-bottom border-secondary pb-2 mb-4 d-flex align-items-center">
+          <i class="bi bi-person-badge me-2 text-primary"></i> Información Personal
+        </h4>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="form-floating">
+              <input type="text" id="customerName" [value]="appointment().customerName"
+                (input)="handleInputChange($event, 'customerName')" class="form-control" placeholder="Nombre Completo"
+                required>
+              <label for="customerName" class="text-secondary">Nombre Completo *</label>
+            </div>
           </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Email *</label>
-            <input
-              type="email"
-              [value]="appointment().customerEmail"
-              (input)="handleInputChange($event, 'customerEmail')"
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              required>
+          <div class="col-md-6">
+            <div class="form-floating">
+              <input type="email" id="customerEmail" [value]="appointment().customerEmail"
+                (input)="handleInputChange($event, 'customerEmail')" class="form-control" placeholder="Email" required>
+              <label for="customerEmail" class="text-secondary">Email *</label>
+            </div>
           </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Teléfono *</label>
-            <input
-              type="tel"
-              [value]="appointment().customerPhone"
-              (input)="handleInputChange($event, 'customerPhone')"
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              required>
+          <div class="col-md-6">
+            <div class="form-floating">
+              <input type="tel" id="customerPhone" [value]="appointment().customerPhone"
+                (input)="handleInputChange($event, 'customerPhone')" class="form-control" placeholder="Teléfono"
+                required>
+              <label for="customerPhone" class="text-secondary">Teléfono *</label>
+            </div>
           </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Fecha y Hora Preferida *</label>
-            <input
-              type="datetime-local"
-              [value]="appointment().appointmentDate"
-              (input)="handleInputChange($event, 'appointmentDate')"
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              required>
+          <div class="col-md-6">
+            <div class="form-floating">
+              <input type="datetime-local" id="appointmentDate" [value]="appointment().appointmentDate"
+                (input)="handleInputChange($event, 'appointmentDate')" class="form-control" required>
+              <label for="appointmentDate" class="text-secondary">Fecha y Hora Preferida *</label>
+            </div>
           </div>
-        </div>
-        <div class="mt-4">
-          <label class="block text-sm font-medium text-gray-700 mb-2">Dirección del Servicio *</label>
-          <input
-            type="text"
-            [value]="appointment().serviceAddress"
-            (input)="handleInputChange($event, 'serviceAddress')"
-            placeholder="Calle, número, colonia, ciudad"
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            required>
+          <div class="col-12">
+            <div class="form-floating">
+              <input type="text" id="serviceAddress" [value]="appointment().serviceAddress"
+                (input)="handleInputChange($event, 'serviceAddress')" class="form-control" placeholder="Dirección"
+                required>
+              <label for="serviceAddress" class="text-secondary">Dirección del Servicio *</label>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- Información del Vehículo -->
-      <div class="border-b pb-6">
-        <h2 class="text-xl font-semibold mb-4 text-gray-800">Información del Vehículo</h2>
-        <div class="grid md:grid-cols-3 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Marca *</label>
-            <input
-              type="text"
-              [value]="appointment().vehicleMake"
-              (input)="handleInputChange($event, 'vehicleMake')"
-              placeholder="Ej: Toyota"
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              required>
+      <div class="mb-5">
+        <h4 class="text-light border-bottom border-secondary pb-2 mb-4 d-flex align-items-center">
+          <i class="bi bi-car-front-fill me-2 text-primary"></i> Información del Vehículo
+        </h4>
+        <div class="row g-3">
+          <div class="col-md-4">
+            <div class="form-floating">
+              <input type="text" id="vehicleMake" [value]="appointment().vehicleMake"
+                (input)="handleInputChange($event, 'vehicleMake')" class="form-control" placeholder="Marca" required>
+              <label for="vehicleMake" class="text-secondary">Marca *</label>
+            </div>
           </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Modelo *</label>
-            <input
-              type="text"
-              [value]="appointment().vehicleModel"
-              (input)="handleInputChange($event, 'vehicleModel')"
-              placeholder="Ej: Corolla"
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              required>
+          <div class="col-md-4">
+            <div class="form-floating">
+              <input type="text" id="vehicleModel" [value]="appointment().vehicleModel"
+                (input)="handleInputChange($event, 'vehicleModel')" class="form-control" placeholder="Modelo" required>
+              <label for="vehicleModel" class="text-secondary">Modelo *</label>
+            </div>
           </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Año</label>
-            <input
-              type="text"
-              [value]="appointment().vehicleYear"
-              (input)="handleInputChange($event, 'vehicleYear')"
-              placeholder="Ej: 2020"
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+          <div class="col-md-4">
+            <div class="form-floating">
+              <input type="text" id="vehicleYear" [value]="appointment().vehicleYear"
+                (input)="handleInputChange($event, 'vehicleYear')" class="form-control" placeholder="Año">
+              <label for="vehicleYear" class="text-secondary">Año</label>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Tipo de Servicio -->
-      <div class="border-b pb-6">
-        <h2 class="text-xl font-semibold mb-4 text-gray-800">Tipo de Servicio</h2>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Servicio Requerido *</label>
-          <select
-            [value]="appointment().serviceType"
-            (change)="handleInputChange($event, 'serviceType')"
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            required>
-            @for (type of serviceTypes; track type.value) {
-              <option [value]="type.value">{{ type.label }}</option>
-            }
-          </select>
+      <div class="mb-5">
+        <h4 class="text-light border-bottom border-secondary pb-2 mb-4 d-flex align-items-center">
+          <i class="bi bi-wrench-adjustable me-2 text-primary"></i> Tipo de Servicio
+        </h4>
+        <div class="mb-3">
+          <div class="form-floating">
+            <select id="serviceType" [value]="appointment().serviceType"
+              (change)="handleInputChange($event, 'serviceType')" class="form-select" required>
+              @for (type of serviceTypes; track type.value) {
+              <option [value]="type.value" class="text-dark">{{ type.label }}</option>
+              }
+            </select>
+            <label for="serviceType" class="text-secondary">Servicio Requerido *</label>
+          </div>
         </div>
-        <div class="mt-4">
-          <label class="block text-sm font-medium text-gray-700 mb-2">Notas Adicionales</label>
-          <textarea
-            [value]="appointment().notes"
-            (input)="handleInputChange($event, 'notes')"
-            rows="3"
-            placeholder="Detalles adicionales sobre el servicio que necesita..."
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+        <div>
+          <div class="form-floating">
+            <textarea id="notes" [value]="appointment().notes" (input)="handleInputChange($event, 'notes')"
+              class="form-control" placeholder="Notas" style="height: 100px"></textarea>
+            <label for="notes" class="text-secondary">Notas Adicionales</label>
+          </div>
         </div>
       </div>
 
       <!-- Submit Button -->
-      <div class="flex gap-4">
-        <button
-          type="submit"
-          [disabled]="isSubmitting()"
-          class="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-6 py-3 rounded-lg font-semibold transition">
-          {{ isSubmitting() ? 'Enviando...' : 'Agendar Cita' }}
+      <div class="d-flex gap-3">
+        <button type="submit" [disabled]="isSubmitting()" class="btn btn-primary btn-lg flex-grow-1 fw-bold shadow-lg">
+          @if(isSubmitting()) {
+          <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Enviando...
+          } @else {
+          AGENDAR CITA
+          }
         </button>
-        <button
-          type="button"
-          (click)="router.navigate(['/'])"
-          class="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 font-semibold transition">
+        <button type="button" (click)="router.navigate(['/'])" class="btn btn-outline-secondary btn-lg px-4">
           Cancelar
         </button>
       </div>

@@ -2,17 +2,19 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FaqService } from '../../services/faq.service';
 import { Faq } from '../../models/shop.models';
+import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 
 @Component({
   selector: 'app-admin-faqs',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, LoadingSpinnerComponent],
   templateUrl: './admin-faqs.component.html'
 })
 export class AdminFaqsComponent implements OnInit {
   private faqService = inject(FaqService);
-  
+
   faqs = signal<Faq[]>([]);
+  loading = signal(true);
   isEditing = signal(false);
   currentFaq = signal<Partial<Faq>>({
     question: '',
@@ -26,9 +28,16 @@ export class AdminFaqsComponent implements OnInit {
   }
 
   loadFaqs() {
+    this.loading.set(true);
     this.faqService.getFaqs().subscribe({
-      next: (faqs) => this.faqs.set(faqs),
-      error: (err) => console.error('Error loading FAQs:', err)
+      next: (faqs) => {
+        this.faqs.set(faqs);
+        this.loading.set(false);
+      },
+      error: (err) => {
+        console.error('Error loading FAQs:', err);
+        this.loading.set(false);
+      }
     });
   }
 

@@ -1,117 +1,116 @@
-<div class="container mx-auto px-4 py-8">
-  <h1 class="text-3xl font-bold mb-8 text-gray-800">Gestión de FAQs</h1>
+<div class="container py-5">
+  <h1 class="h2 fw-bold mb-5 text-uppercase">Gestión de <span class="text-primary">FAQs</span></h1>
 
-  <!-- Formulario -->
-  <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
-    <h2 class="text-xl font-semibold mb-4 text-gray-800">
-      {{ isEditing() ? 'Editar FAQ' : 'Nueva FAQ' }}
-    </h2>
-    <form (ngSubmit)="saveFaq()" class="space-y-4">
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Pregunta</label>
-        <input
-          type="text"
-          [value]="currentFaq().question"
-          (input)="handleInputChange($event, 'question')"
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-          required>
-      </div>
-
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Respuesta</label>
-        <textarea
-          [value]="currentFaq().answer"
-          (input)="handleInputChange($event, 'answer')"
-          rows="4"
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-          required></textarea>
-      </div>
-
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Posición</label>
-          <input
-            type="number"
-            [value]="currentFaq().position"
-            (input)="handleNumberChange($event, 'position')"
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-            required>
-        </div>
-        <div>
-          <label class="flex items-center gap-2 mt-8">
-            <input
-              type="checkbox"
-              [checked]="currentFaq().active"
-              (change)="handleCheckboxChange($event, 'active')"
-              class="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500">
-            <span class="text-sm font-medium text-gray-700">Activa</span>
-          </label>
-        </div>
-      </div>
-
-      <div class="flex gap-3">
-        <button
-          type="submit"
-          class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold transition">
-          {{ isEditing() ? 'Actualizar' : 'Crear' }}
-        </button>
-        @if (isEditing()) {
-          <button
-            type="button"
-            (click)="resetForm()"
-            class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg font-semibold transition">
-            Cancelar
-          </button>
-        }
-      </div>
-    </form>
-  </div>
-
-  <!-- Lista de FAQs -->
-  <div class="bg-white rounded-lg shadow-lg p-6">
-    <h2 class="text-xl font-semibold mb-4 text-gray-800">FAQs Existentes</h2>
-    <div class="space-y-3">
-      @for (faq of faqs(); track faq.id) {
-        <div class="border rounded-lg p-4 hover:bg-gray-50">
-          <div class="flex justify-between items-start gap-4">
-            <div class="flex-1">
-              <div class="flex items-center gap-2 mb-2">
-                <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">
-                  Pos: {{ faq.position }}
-                </span>
-                @if (faq.active) {
-                  <span class="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded">
-                    Activa
-                  </span>
-                } @else {
-                  <span class="bg-gray-100 text-gray-800 text-xs font-semibold px-2 py-1 rounded">
-                    Inactiva
-                  </span>
-                }
-              </div>
-              <h3 class="font-semibold text-gray-800 mb-2">{{ faq.question }}</h3>
-              <p class="text-gray-600 text-sm">{{ faq.answer }}</p>
+  @if (loading()) {
+  <app-loading-spinner message="Cargando FAQs..."></app-loading-spinner>
+  } @else {
+  <div class="row g-5">
+    <!-- Formulario -->
+    <div class="col-lg-5">
+      <div class="card glass-pane border-0 sticky-top" style="top: 100px;">
+        <div class="card-body p-4">
+          <h2 class="h5 fw-bold mb-4 text-uppercase">
+            <i class="bi bi-question-circle me-2 text-primary"></i>
+            {{ isEditing() ? 'Editar FAQ' : 'Nueva FAQ' }}
+          </h2>
+          <form (ngSubmit)="saveFaq()">
+            <div class="form-floating mb-3">
+              <input type="text" id="question" [value]="currentFaq().question"
+                (input)="handleInputChange($event, 'question')" class="form-control" placeholder="Pregunta" required>
+              <label for="question" class="text-secondary">Pregunta</label>
             </div>
-            <div class="flex gap-2">
-              <button
-                (click)="editFaq(faq)"
-                class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm transition">
-                Editar
+
+            <div class="form-floating mb-3">
+              <textarea id="answer" [value]="currentFaq().answer" (input)="handleInputChange($event, 'answer')"
+                class="form-control" placeholder="Respuesta" style="height: 150px" required></textarea>
+              <label for="answer" class="text-secondary">Respuesta</label>
+            </div>
+
+            <div class="row g-3 mb-4">
+              <div class="col-6">
+                <div class="form-floating">
+                  <input type="number" id="position" [value]="currentFaq().position"
+                    (input)="handleNumberChange($event, 'position')" class="form-control" placeholder="Posición"
+                    required>
+                  <label for="position" class="text-secondary">Posición</label>
+                </div>
+              </div>
+              <div class="col-6 d-flex align-items-center">
+                <div class="form-check form-switch ps-5">
+                  <input type="checkbox" id="active" [checked]="currentFaq().active"
+                    (change)="handleCheckboxChange($event, 'active')" class="form-check-input" role="switch">
+                  <label for="active" class="form-check-label text-light">Activa</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex">
+              <button type="submit" class="btn btn-primary fw-bold flex-grow-1">
+                <i class="bi bi-save me-2"></i> {{ isEditing() ? 'Actualizar' : 'Crear' }}
               </button>
-              <button
-                (click)="deleteFaq(faq.id!)"
-                class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm transition">
-                Eliminar
+              @if (isEditing()) {
+              <button type="button" (click)="resetForm()" class="btn btn-outline-secondary flex-grow-1">
+                Cancelar
               </button>
+              }
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lista de FAQs -->
+    <div class="col-lg-7">
+      <div class="glass-pane p-4">
+        <h2 class="h5 fw-bold mb-4 text-uppercase text-light">FAQs Existentes</h2>
+        <div class="d-grid gap-3">
+          @for (faq of faqs(); track faq.id) {
+          <div class="card bg-dark bg-opacity-25 border-secondary border-opacity-25">
+            <div class="card-body p-3">
+              <div class="d-flex justify-content-between align-items-start gap-3">
+                <div class="flex-grow-1">
+                  <div class="d-flex gap-2 mb-2">
+                    <span
+                      class="badge bg-secondary bg-opacity-25 text-light border border-secondary border-opacity-50 rounded-pill">
+                      Pos: {{ faq.position }}
+                    </span>
+                    @if (faq.active) {
+                    <span
+                      class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-50 rounded-pill">
+                      Activa
+                    </span>
+                    } @else {
+                    <span
+                      class="badge bg-danger bg-opacity-25 text-danger border border-danger border-opacity-50 rounded-pill">
+                      Inactiva
+                    </span>
+                    }
+                  </div>
+                  <h3 class="h6 fw-bold text-light mb-2">{{ faq.question }}</h3>
+                  <p class="text-secondary small mb-0">{{ faq.answer }}</p>
+                </div>
+                <div class="d-flex flex-column gap-2">
+                  <button (click)="editFaq(faq)" class="btn btn-sm btn-outline-info" title="Editar">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <button (click)="deleteFaq(faq.id!)" class="btn btn-sm btn-outline-danger" title="Eliminar">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
+          }
+          @if (faqs().length === 0) {
+          <div class="text-center text-secondary py-5">
+            <i class="bi bi-inbox display-4 mb-3 d-block opacity-50"></i>
+            <p>No hay FAQs registradas.</p>
+          </div>
+          }
         </div>
-      }
-      @if (faqs().length === 0) {
-        <div class="text-center text-gray-500 py-8">
-          <p>No hay FAQs registradas.</p>
-        </div>
-      }
+      </div>
     </div>
   </div>
+  }
+
 </div>

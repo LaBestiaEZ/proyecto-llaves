@@ -1,46 +1,54 @@
-<div class="container mx-auto px-4 py-8">
-  <h1 class="text-3xl font-bold mb-8">Mis Pedidos</h1>
+<div class="container py-5">
+  <h1 class="h2 fw-bold mb-4 text-uppercase">Mis <span class="text-primary">Pedidos</span></h1>
 
   @if (loading()) {
-    <div class="text-center py-12">Cargando pedidos...</div>
+  <app-loading-spinner message="Cargando historial..."></app-loading-spinner>
   } @else if (orders().length === 0) {
-    <div class="text-center py-12">
-      <p class="text-xl text-gray-600 mb-4">No tienes pedidos aún</p>
-      <a routerLink="/products" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600">
-        Ver productos
-      </a>
-    </div>
+  <div class="glass-pane p-5 text-center">
+    <i class="bi bi-box-seam display-1 text-secondary mb-3"></i>
+    <p class="lead text-secondary mb-4">No tienes pedidos aún</p>
+    <a routerLink="/products" class="btn btn-primary">
+      Ver productos
+    </a>
+  </div>
   } @else {
-    <div class="space-y-4">
-      @for (order of orders(); track order.id) {
-        <div class="bg-white rounded-lg shadow-md p-6">
-          <div class="flex justify-between items-start mb-4">
-            <div>
-              <h3 class="text-lg font-semibold">Pedido #{{ order.id }}</h3>
-              <p class="text-gray-600 text-sm">{{ order.createdAt | date:'dd/MM/yyyy HH:mm' }}</p>
-            </div>
-            <span [class]="getStatusClass(order.status)" class="px-3 py-1 rounded-full text-sm font-semibold">
-              {{ getStatusLabel(order.status) }}
-            </span>
+  <div class="d-grid gap-4">
+    @for (order of orders(); track order.id) {
+    <div class="card glass-pane border-0">
+      <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-start mb-4 border-bottom border-secondary pb-3">
+          <div>
+            <h3 class="h5 fw-bold text-uppercase mb-1">Pedido <span class="text-primary">#{{ order.id }}</span></h3>
+            <p class="text-secondary small mb-0"><i class="bi bi-clock me-1"></i> {{ order.createdAt | date:'dd/MM/yyyy
+              HH:mm' }}</p>
           </div>
+          <span
+            [class]="'badge ' + (order.status === 'completed' ? 'bg-success' : 'bg-warning') + ' bg-opacity-25 text-white border border-' + (order.status === 'completed' ? 'success' : 'warning')">
+            {{ getStatusLabel(order.status) }}
+          </span>
+        </div>
 
-          <div class="border-t pt-4">
-            <h4 class="font-semibold mb-2">Productos:</h4>
-            <div class="space-y-2">
-              @for (item of order.items; track item.id) {
-                <div class="flex justify-between text-sm">
-                  <span>{{ item.product.brand }} {{ item.product.model }} x{{ item.quantity }}</span>
-                  <span>{{ (parseFloat(item.price) * item.quantity).toFixed(2) }}€</span>
-                </div>
-              }
+        <div class="mb-4">
+          <h4 class="h6 text-secondary text-uppercase mb-3">Productos</h4>
+          <div class="d-grid gap-2">
+            @for (item of order.items; track item.id) {
+            <div class="d-flex justify-content-between align-items-center p-2 rounded bg-dark bg-opacity-50">
+              <span class="text-light">{{ item.product.brand }} {{ item.product.model }} <span
+                  class="text-secondary">x{{ item.quantity }}</span></span>
+              <span class="font-monospace text-primary">{{ (parseFloat(item.price) * item.quantity).toFixed(2)
+                }}€</span>
             </div>
-          </div>
-
-          <div class="border-t mt-4 pt-4 flex justify-between items-center">
-            <span class="text-xl font-bold">Total: {{ order.total }}€</span>
+            }
           </div>
         </div>
-      }
+
+        <div class="d-flex justify-content-end align-items-center pt-2">
+          <span class="text-secondary me-3 text-uppercase small">Total del Pedido</span>
+          <span class="h3 mb-0 text-white fw-bold">{{ order.total }}€</span>
+        </div>
+      </div>
     </div>
+    }
+  </div>
   }
 </div>

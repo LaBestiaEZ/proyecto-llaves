@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../services/product.service';
 import { Product } from '../../models/shop.models';
+import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 
 @Component({
   selector: 'app-admin-products',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LoadingSpinnerComponent],
   templateUrl: './admin-products.component.html'
 })
 export class AdminProductsComponent implements OnInit {
@@ -26,7 +27,7 @@ export class AdminProductsComponent implements OnInit {
     imageUrl: ''
   };
 
-  constructor(private productService: ProductService) {}
+  constructor(private productService: ProductService) { }
 
   ngOnInit(): void {
     this.loadProducts();
@@ -81,7 +82,7 @@ export class AdminProductsComponent implements OnInit {
     };
 
     const editing = this.editingProduct();
-    const request = editing 
+    const request = editing
       ? this.productService.update(editing.id!, productData)
       : this.productService.create(productData);
 
