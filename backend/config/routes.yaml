@@ -1,12 +1,19 @@
-controllers:
-    resource:
-        path: ../src/Controller/
-        namespace: App\Controller
-    type: attribute
+
+# Redirigir la raíz a la documentación de la API
+home:
+    path: /
+    controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController
+    defaults:
+        route: api_doc
+        permanent: false
 
 api_login_check:
     path: /api/auth/login
+    defaults:
+        _api_resource_class: false  # No documentar automáticamente en OpenAPI
 
 gesdinet_jwt_refresh_token:
     path: /api/auth/refresh
     controller: gesdinet.jwtrefreshtoken::refresh
+    defaults:
+        _api_resource_class: false  # No documentar automáticamente en OpenAPI

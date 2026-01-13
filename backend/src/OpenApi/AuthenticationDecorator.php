@@ -16,24 +16,12 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
     {
         $openApi = ($this->decorated)($context);
         $paths = $openApi->getPaths();
-
-        // Obtener todas las rutas y reconstruir sin la de login de LexikJWT
         $pathsArray = $paths->getPaths();
-        
-        // Eliminar el endpoint de login que agrega LexikJWT
-        unset($pathsArray['/api/auth/login']);
-        
-        // Reconstruir paths sin el login de Lexik
-        $newPaths = new Model\Paths();
-        foreach ($pathsArray as $path => $pathItem) {
-            $newPaths->addPath($path, $pathItem);
-        }
-        
-        // Crear nuevo OpenApi con los paths limpios
-        $openApi = $openApi->withPaths($newPaths);
-        $paths = $openApi->getPaths();
 
-        // Login
+        // FORZAR: Eliminar completamente el endpoint de login si existe
+        unset($pathsArray['/api/auth/login']);
+
+        // Crear el endpoint de login desde cero con el tag correcto
         $loginPath = new Model\PathItem(
             post: new Model\Operation(
                 operationId: 'postAuthLogin',
@@ -81,57 +69,7 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
                 ]
             )
         );
-        $paths->addPath('/api/auth/login', $loginPath);
-
-        // Register
-        $registerPath = new Model\PathItem(
-            post: new Model\Operation(
-                operationId: 'postAuthRegister',
-                tags: ['Authentication'],
-                summary: 'Registrar usuario',
-                description: 'Crear una nueva cuenta de usuario con rol ROLE_USER',
-                requestBody: new Model\RequestBody(
-                    content: new \ArrayObject([
-                        'application/json' => [
-                            'schema' => [
-                                'type' => 'object',
-                                'required' => ['email', 'password'],
-                                'properties' => [
-                                    'email' => ['type' => 'string', 'format' => 'email', 'example' => 'usuario@ejemplo.com'],
-                                    'password' => ['type' => 'string', 'format' => 'password', 'example' => 'mipassword123']
-                                ]
-                            ]
-                        ]
-                    ])
-                ),
-                responses: [
-                    '201' => new Model\Response(
-                        description: 'Usuario registrado exitosamente',
-                        content: new \ArrayObject([
-                            'application/json' => [
-                                'schema' => [
-                                    'type' => 'object',
-                                    'properties' => [
-                                        'message' => ['type' => 'string'],
-                                        'user' => [
-                                            'type' => 'object',
-                                            'properties' => [
-                                                'id' => ['type' => 'integer'],
-                                                'email' => ['type' => 'string'],
-                                                'roles' => ['type' => 'array', 'items' => ['type' => 'string']]
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ])
-                    ),
-                    '400' => new Model\Response(description: 'Datos inválidos'),
-                    '409' => new Model\Response(description: 'Email ya registrado')
-                ]
-            )
-        );
-        $paths->addPath('/api/auth/register', $registerPath);
+        $pathsArray['/api/auth/login'] = $loginPath;
 
         // Refresh Token
         $refreshPath = new Model\PathItem(
@@ -180,8 +118,14 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
                 ]
             )
         );
-        $paths->addPath('/api/auth/refresh', $refreshPath);
+        $pathsArray['/api/auth/refresh'] = $refreshPath;
 
-        return $openApi;
+        // Reconstruir el objeto Paths con todos los endpoints
+        $newPaths = new Model\Paths();
+        foreach ($pathsArray as $path => $pathItem) {
+            $newPaths->addPath($path, $pathItem);
+        }
+
+        return $openApi->withPaths($newPaths);
     }
 }

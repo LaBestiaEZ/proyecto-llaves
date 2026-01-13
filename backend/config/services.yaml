@@ -26,4 +26,10 @@ services:
     # Decorador de OpenAPI para documentación de autenticación
     App\OpenApi\AuthenticationDecorator:
         decorates: 'api_platform.openapi.factory'
+        decoration_priority: -10  # Prioridad negativa para ejecutarse AL FINAL
         arguments: ['@.inner']
+
+    # State Processor para registro de usuarios
+    App\State\UserRegistrationProcessor:
+        arguments:
+            $persistProcessor: '@api_platform.doctrine.orm.state.persist_processor'
