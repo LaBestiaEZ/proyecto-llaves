@@ -1,10 +1,18 @@
 nelmio_cors:
     defaults:
         origin_regex: true
-        allow_origin: ['*']
+        # Permite peticiones desde ngrok, localhost y otros dominios configurados
+        allow_origin: ['%env(CORS_ALLOW_ORIGIN)%']
         allow_methods: ['GET', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE']
-        allow_headers: ['Content-Type', 'Authorization']
-        expose_headers: ['Link']
+        allow_headers: ['Content-Type', 'Authorization', 'X-Requested-With']
+        expose_headers: ['Link', 'X-Total-Count']
+        allow_credentials: true
         max_age: 3600
     paths:
-        '^/api': ~
+        '^/api':
+            allow_origin: ['%env(CORS_ALLOW_ORIGIN)%']
+            allow_headers: ['Content-Type', 'Authorization', 'X-Requested-With']
+            allow_methods: ['GET', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE']
+            max_age: 3600
+        '^/':
+            allow_origin: ['%env(CORS_ALLOW_ORIGIN)%']

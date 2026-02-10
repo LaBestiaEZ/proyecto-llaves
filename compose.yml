@@ -1,0 +1,103 @@
+services:
+  # Base de datos PostgreSQL
+  db:
+    image: postgres:16-alpine
+    container_name: llaves-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    networks:
+      - llaves-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend Symfony (PHP-FPM)
+  backend:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: llaves-backend
+    restart: unless-stopped
+    volumes:
+      - ./backend:/var/www/backend
+      - ./docker/php/entrypoint-dev.sh:/usr/local/bin/entrypoint.sh
+    entrypoint: ["/bin/sh", "/usr/local/bin/entrypoint.sh"]
+    environment:
+      DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?serverVersion=16&charset=utf8"
+      APP_ENV: ${APP_ENV:-dev}
+      APP_SECRET: ${APP_SECRET}
+      JWT_PASSPHRASE: ${JWT_PASSPHRASE}
+      JWT_TTL: ${JWT_TTL:-3600}
+      CORS_ALLOW_ORIGIN: ${CORS_ALLOW_ORIGIN}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - llaves-network
+
+  # Nginx - Proxy Inverso y Servidor Web
+  webserver:
+    image: nginx:alpine
+    container_name: llaves-webserver
+    restart: unless-stopped
+    volumes:
+      - ./backend:/var/www/backend
+      - ./frontend/dist:/usr/share/nginx/html
+      - ./docker/nginx/nginx.prod.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "${WEBSERVER_PORT:-80}:80"
+    depends_on:
+      - backend
+    networks:
+      - llaves-network
+
+  # Portainer - Gestión visual de contenedores
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: llaves-portainer
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    ports:
+      - "${PORTAINER_PORT:-9000}:9000"
+      - "${PORTAINER_HTTPS_PORT:-9443}:9443"
+    networks:
+      - llaves-network
+
+  # ngrok - Túnel para exposición pública
+  ngrok:
+    image: ngrok/ngrok:latest
+    container_name: llaves-ngrok
+    restart: unless-stopped
+    command:
+      - "http"
+      - "webserver:80"
+      - "--authtoken=${NGROK_AUTHTOKEN}"
+    ports:
+      - "${NGROK_PORT:-4040}:4040"
+    depends_on:
+      - webserver
+    networks:
+      - llaves-network
+    environment:
+      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}
+
+volumes:
+  postgres_data:
+    driver: local
+  portainer_data:
+    driver: local
+
+networks:
+  llaves-network:
+    driver: bridge

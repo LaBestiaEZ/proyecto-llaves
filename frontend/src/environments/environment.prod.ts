@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://localhost:8080/api'
+  // Usar ruta relativa para que funcione con ngrok y localhost
+  apiUrl: '/api'
 };
