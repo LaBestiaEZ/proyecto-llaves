@@ -44,7 +44,7 @@ if ! command_exists make; then
     exit 1
 fi
 
-echo -e "${GREEN✓ Todos los prerrequisitos están instalados${NC}"
+echo -e "${GREEN}✓ Todos los prerrequisitos están instalados${NC}"
 echo ""
 
 # Verificar archivo .env
