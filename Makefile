@@ -60,7 +60,7 @@ up:
 	@echo ""
 	@echo "$(YELLOW)📍 Servicios disponibles:$(NC)"
 	@echo "  - Frontend/Backend: http://localhost"
-	@echo "  - Portainer: http://localhost:9000"
+	@echo "  - Portainer: http://localhost:9443"
 	@echo "  - ngrok Dashboard: http://localhost:4040"
 	@echo "  - PostgreSQL: localhost:5432"
 	@echo ""

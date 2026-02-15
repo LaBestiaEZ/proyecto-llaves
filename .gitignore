@@ -23,8 +23,8 @@
 
 # Variables de entorno sensibles
 # ⚠️ IMPORTANTE: .env contiene credenciales y tokens sensibles
-.env
-/backend/.env
+#.env
+#/backend/.env
 
 # Logs
 *.log
