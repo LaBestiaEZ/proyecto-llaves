@@ -49,70 +49,104 @@ echo ""
 
 # Verificar archivo .env
 if [ ! -f ".env" ]; then
-    echo -e "${YELLOW}📝 Creando archivo .env desde .env.example...${NC}"
+    echo -e "${YELLOW}📝 Creando archivo .env...${NC}"
     cp .env.example .env
-    echo -e "${GREEN}✓ Archivo .env creado${NC}"
+    
+    # Generar claves automáticamente
+    echo -e "${YELLOW}🔑 Generando claves de seguridad...${NC}"
+    
+    # Generar APP_SECRET
+    APP_SECRET=$(openssl rand -hex 32)
+    sed -i "s/generar_secreto_de_32_caracteres_aleatorios/${APP_SECRET}/" .env
+    echo -e "${GREEN}✓ APP_SECRET generado${NC}"
+    
+    # Generar JWT_PASSPHRASE
+    JWT_PASSPHRASE=$(openssl rand -base64 32 | tr -d '\n')
+    sed -i "s/generar_passphrase_seguro/${JWT_PASSPHRASE}/" .env
+    echo -e "${GREEN}✓ JWT_PASSPHRASE generado${NC}"
+    
+    # Generar POSTGRES_PASSWORD
+    POSTGRES_PASSWORD=$(openssl rand -base64 24 | tr -d '\n')
+    sed -i "s/password_seguro_aqui/${POSTGRES_PASSWORD}/" .env
+    echo -e "${GREEN}✓ POSTGRES_PASSWORD generado${NC}"
+    
+    # Usar nombre de base de datos por defecto
+    sed -i "s/nombre_base_datos/llaves_produccion/" .env
+    sed -i "s/usuario_db/llaves_user/" .env
+    
     echo ""
-    echo -e "${RED}⚠️  IMPORTANTE: Debes configurar las siguientes variables en .env:${NC}"
-    echo -e "   ${YELLOW}1. NGROK_AUTHTOKEN - Obtener en https://dashboard.ngrok.com/get-started/your-authtoken${NC}"
-    echo -e "   ${YELLOW}2. POSTGRES_PASSWORD - Cambia la contraseña por defecto${NC}"
-    echo -e "   ${YELLOW}3. APP_SECRET - Genera con: openssl rand -hex 32${NC}"
-    echo -e "   ${YELLOW}4. JWT_PASSPHRASE - Genera con: openssl rand -base64 32${NC}"
+    echo -e "${YELLOW}🌐 Configurando ngrok...${NC}"
+    echo -e "${BLUE}Para obtener tu token de ngrok:${NC}"
+    echo -e "   1. Visita: ${YELLOW}https://dashboard.ngrok.com/get-started/your-authtoken${NC}"
+    echo -e "   2. Copia tu authtoken"
     echo ""
-    read -p "Presiona ENTER cuando hayas configurado el archivo .env..."
+    read -p "Ingresa tu NGROK_AUTHTOKEN: " NGROK_TOKEN
+    
+    if [ -z "$NGROK_TOKEN" ]; then
+        echo -e "${RED}❌ No ingresaste el token de ngrok${NC}"
+        echo -e "${YELLOW}Puedes configurarlo después editando el archivo .env${NC}"
+    else
+        sed -i "s/tu_token_de_ngrok_aqui/${NGROK_TOKEN}/" .env
+        echo -e "${GREEN}✓ NGROK_AUTHTOKEN configurado${NC}"
+    fi
+    
+    echo ""
+    echo -e "${GREEN}✓ Archivo .env configurado completamente${NC}"
 else
     echo -e "${GREEN}✓ Archivo .env encontrado${NC}"
+    
+    # Verificar si las claves aún tienen valores por defecto y generarlas
+    if grep -q "generar_secreto_de_32_caracteres_aleatorios" .env; then
+        echo -e "${YELLOW}🔑 Generando APP_SECRET...${NC}"
+        APP_SECRET=$(openssl rand -hex 32)
+        sed -i "s/generar_secreto_de_32_caracteres_aleatorios/${APP_SECRET}/" .env
+        echo -e "${GREEN}✓ APP_SECRET generado${NC}"
+    fi
+    
+    if grep -q "generar_passphrase_seguro" .env; then
+        echo -e "${YELLOW}🔑 Generando JWT_PASSPHRASE...${NC}"
+        JWT_PASSPHRASE=$(openssl rand -base64 32 | tr -d '\n')
+        sed -i "s/generar_passphrase_seguro/${JWT_PASSPHRASE}/" .env
+        echo -e "${GREEN}✓ JWT_PASSPHRASE generado${NC}"
+    fi
+    
+    if grep -q "password_seguro_aqui" .env; then
+        echo -e "${YELLOW}🔑 Generando POSTGRES_PASSWORD...${NC}"
+        POSTGRES_PASSWORD=$(openssl rand -base64 24 | tr -d '\n')
+        sed -i "s/password_seguro_aqui/${POSTGRES_PASSWORD}/" .env
+        echo -e "${GREEN}✓ POSTGRES_PASSWORD generado${NC}"
+    fi
 fi
 echo ""
 
 # Verificar NGROK_AUTHTOKEN
 if grep -q "tu_token_de_ngrok_aqui" .env; then
-    echo -e "${RED}❌ NGROK_AUTHTOKEN no está configurado en .env${NC}"
-    echo -e "${YELLOW}Por favor, edita .env y configura tu token de ngrok${NC}"
-    exit 1
-fi
-
-# Verificar frontend compilado
-echo -e "${YELLOW}🎨 Verificando frontend compilado...${NC}"
-if [ ! -d "frontend/dist" ]; then
-    echo -e "${YELLOW}📦 Frontend no compilado. Compilando...${NC}"
+    echo -e "${YELLOW}⚠️  NGROK_AUTHTOKEN no está configurado${NC}"
+    echo -e "${BLUE}Para obtener tu token de ngrok:${NC}"
+    echo -e "   Visita: ${YELLOW}https://dashboard.ngrok.com/get-started/your-authtoken${NC}"
+    echo ""
+    read -p "¿Deseas configurarlo ahora? (s/N): " configurar_ngrok
     
-    if [ ! -d "frontend/node_modules" ]; then
-        echo -e "${YELLOW}   Instalando dependencias de npm...${NC}"
-        cd frontend
-        npm install
-        cd ..
+    if [[ "$configurar_ngrok" =~ ^[Ss]$ ]]; then
+        read -p "Ingresa tu NGROK_AUTHTOKEN: " NGROK_TOKEN
+        if [ ! -z "$NGROK_TOKEN" ]; then
+            sed -i "s/tu_token_de_ngrok_aqui/${NGROK_TOKEN}/" .env
+            echo -e "${GREEN}✓ NGROK_AUTHTOKEN configurado${NC}"
+        fi
+    else
+        echo -e "${YELLOW}⚠️  Continuando sin ngrok. Puedes configurarlo después en .env${NC}"
     fi
-    
-    echo -e "${YELLOW}   Compilando Angular para producción...${NC}"
-    cd frontend
-    npm run build
-    cd ..
-    
-    echo -e "${GREEN}✓ Frontend compilado${NC}"
-else
-    echo -e "${GREEN}✓ Frontend ya está compilado${NC}"
 fi
-echo ""
 
 # Levantar infraestructura
 echo -e "${YELLOW}🚀 Levantando infraestructura Docker...${NC}"
+echo -e "${BLUE}   (El frontend se compilará automáticamente durante el build)${NC}"
 make up
 echo ""
 
 # Dar tiempo a que los servicios se inicien
-echo -e "${YELLOW}⏳ Esperando a que los servicios estén listos (30s)...${NC}"
-sleep 30
-
-# Instalar dependencias de Composer
-echo -e "${YELLOW}📦 Instalando dependencias de Composer...${NC}"
-make install
-echo ""
-
-# Ejecutar migraciones
-echo -e "${YELLOW}🗄️  Ejecutando migraciones de base de datos...${NC}"
-make migrate
-echo ""
+echo -e "${YELLOW}⏳ Esperando a que los servicios estén listos (45s)...${NC}"
+sleep 45
 
 # Resumen final
 echo -e "${GREEN}╔══════════════════════════════════════════════════════════════╗${NC}"
@@ -122,9 +156,14 @@ echo ""
 echo -e "${BLUE}📍 Servicios disponibles:${NC}"
 echo -e "   ${YELLOW}• Aplicación Web:${NC}     http://localhost"
 echo -e "   ${YELLOW}• API Backend:${NC}        http://localhost/api"
-echo -e "   ${YELLOW}• Portainer:${NC}          http://localhost:9000"
+echo -e "   ${YELLOW}• Portainer:${NC}          http://localhost:9443"
 echo -e "   ${YELLOW}• ngrok Dashboard:${NC}    http://localhost:4040"
 echo -e "   ${YELLOW}• PostgreSQL:${NC}         localhost:5432"
+echo ""
+echo -e "${BLUE}👤 Usuario administrador:${NC}"
+echo -e "   ${YELLOW}• Email:${NC}      admin@llaves.com"
+echo -e "   ${YELLOW}• Contraseña:${NC} test123"
+echo -e "   ${RED}⚠️  Cambia esta contraseña después del primer login${NC}"
 echo ""
 echo -e "${BLUE}🌐 URL Pública (ngrok):${NC}"
 echo -e "   Ejecuta: ${YELLOW}make ngrok-url${NC}"
