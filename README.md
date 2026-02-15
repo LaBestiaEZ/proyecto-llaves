@@ -2,7 +2,15 @@
 
 Sistema completo con backend en Symfony (API REST) y frontend en Angular, completamente dockerizado para desarrollo y producción.
 
-## 📋 Requisitos Previos
+## � ADVERTENCIA DE SEGURIDAD
+
+⚠️ **NUNCA subas estos archivos a Git:**
+- `.env` - Contiene contraseñas y tokens
+- `backend/config/jwt/*.pem` - Claves privadas JWT
+
+👉 Lee [SECURITY.md](SECURITY.md) para más detalles
+
+## �📋 Requisitos Previos
 
 ### 1. Instalar Docker Desktop (Windows)
 

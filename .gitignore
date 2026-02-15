@@ -23,8 +23,14 @@
 
 # Variables de entorno sensibles
 # ⚠️ IMPORTANTE: .env contiene credenciales y tokens sensibles
-#.env
-#/backend/.env
+.env
+/backend/.env
+
+# Docker
+.docker/
+
+# Claves JWT (se generan automáticamente)
+/backend/config/jwt/*.pem
 
 # Logs
 *.log
