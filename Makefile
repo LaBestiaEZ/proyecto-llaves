@@ -21,7 +21,6 @@ help:
 	@echo "  make restart       - Reinicia todos los servicios"
 	@echo "  make build         - Construye las imágenes Docker sin caché"
 	@echo "  make rebuild       - Reconstruye TODO desde cero (frontend + docker)"
-	@echo "  make build-frontend- Compila el frontend Angular"
 	@echo "  make ps            - Muestra el estado de los contenedores"
 	@echo ""
 	@echo "$(GREEN)Gestión de Contenedores (DESARROLLO):$(NC)"
@@ -55,7 +54,7 @@ help:
 	@echo "$(YELLOW)═══════════════════════════════════════════════════════════════$(NC)"
 
 ## up: Levanta toda la infraestructura en segundo plano
-up: build-frontend
+up:
 	@echo "$(YELLOW)🚀 Levantando infraestructura...$(NC)"
 	docker compose -f compose.yml up -d
 	@echo "$(GREEN)✓ Infraestructura levantada correctamente$(NC)"
@@ -102,14 +101,10 @@ build-frontend:
 ## rebuild: Reconstruye TODO desde cero (frontend + imágenes Docker)
 rebuild:
 	@echo "$(YELLOW)🔥 Reconstruyendo TODO desde cero...$(NC)"
-	@echo "$(YELLOW)   Limpiando frontend...$(NC)"
-	@rm -rf frontend/dist frontend/.angular
 	@echo "$(YELLOW)   Bajando contenedores...$(NC)"
-	@docker compose -f compose.yml down
+	@docker compose -f compose.yml down -v
 	@echo "$(YELLOW)   Limpiando caché de Docker...$(NC)"
 	@docker compose -f compose.yml build --no-cache
-	@echo "$(YELLOW)   Recompilando frontend...$(NC)"
-	@make build-frontend
 	@echo "$(YELLOW)   Levantando servicios...$(NC)"
 	@docker compose -f compose.yml up -d
 	@echo "$(GREEN)✓ Reconstrucción completa terminada$(NC)"
