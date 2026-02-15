@@ -1,7 +1,7 @@
 # Makefile para gestión de microservicios
 # Proyecto: Sistema de Llaves con Angular + Symfony + PostgreSQL + Nginx + Portainer
 
-.PHONY: help up down restart build install migrate logs logs-backend logs-frontend logs-db logs-nginx ps clean shell-backend shell-db ngrok-url portainer-url dev-up dev-down dev-restart dev-logs dev-ps dev-build
+.PHONY: help up down restart build build-frontend rebuild install migrate logs logs-backend logs-frontend logs-db logs-nginx ps clean shell-backend shell-db ngrok-url portainer-url dev-up dev-down dev-restart dev-logs dev-ps dev-build
 
 # Colores para output
 YELLOW := \033[1;33m
@@ -19,7 +19,9 @@ help:
 	@echo "  make up            - Levanta toda la infraestructura en segundo plano"
 	@echo "  make down          - Baja todos los servicios"
 	@echo "  make restart       - Reinicia todos los servicios"
-	@echo "  make build         - Construye las imágenes Docker"
+	@echo "  make build         - Construye las imágenes Docker sin caché"
+	@echo "  make rebuild       - Reconstruye TODO desde cero (frontend + docker)"
+	@echo "  make build-frontend- Compila el frontend Angular"
 	@echo "  make ps            - Muestra el estado de los contenedores"
 	@echo ""
 	@echo "$(GREEN)Gestión de Contenedores (DESARROLLO):$(NC)"
@@ -53,7 +55,7 @@ help:
 	@echo "$(YELLOW)═══════════════════════════════════════════════════════════════$(NC)"
 
 ## up: Levanta toda la infraestructura en segundo plano
-up:
+up: build-frontend
 	@echo "$(YELLOW)🚀 Levantando infraestructura...$(NC)"
 	docker compose -f compose.yml up -d
 	@echo "$(GREEN)✓ Infraestructura levantada correctamente$(NC)"
@@ -80,6 +82,39 @@ build:
 	@echo "$(YELLOW)🔨 Construyendo imágenes...$(NC)"
 	docker compose -f compose.yml build --no-cache
 	@echo "$(GREEN)✓ Imágenes construidas$(NC)"
+
+## build-frontend: Compila el frontend de Angular
+build-frontend:
+	@echo "$(YELLOW)🎨 Verificando frontend...$(NC)"
+	@if [ ! -d "frontend/dist" ] || [ -z "$$(ls -A frontend/dist 2>/dev/null)" ]; then \
+		echo "$(YELLOW)📦 Compilando frontend Angular...$(NC)"; \
+		if [ ! -d "frontend/node_modules" ]; then \
+			echo "$(YELLOW)   Instalando dependencias npm...$(NC)"; \
+			cd frontend && npm install && cd ..; \
+		fi; \
+		echo "$(YELLOW)   Compilando para producción...$(NC)"; \
+		cd frontend && npm run build && cd ..; \
+		echo "$(GREEN)✓ Frontend compilado$(NC)"; \
+	else \
+		echo "$(GREEN)✓ Frontend ya está compilado$(NC)"; \
+	fi
+
+## rebuild: Reconstruye TODO desde cero (frontend + imágenes Docker)
+rebuild:
+	@echo "$(YELLOW)🔥 Reconstruyendo TODO desde cero...$(NC)"
+	@echo "$(YELLOW)   Limpiando frontend...$(NC)"
+	@rm -rf frontend/dist frontend/.angular
+	@echo "$(YELLOW)   Bajando contenedores...$(NC)"
+	@docker compose -f compose.yml down
+	@echo "$(YELLOW)   Limpiando caché de Docker...$(NC)"
+	@docker compose -f compose.yml build --no-cache
+	@echo "$(YELLOW)   Recompilando frontend...$(NC)"
+	@make build-frontend
+	@echo "$(YELLOW)   Levantando servicios...$(NC)"
+	@docker compose -f compose.yml up -d
+	@echo "$(GREEN)✓ Reconstrucción completa terminada$(NC)"
+	@echo ""
+	@make ps
 
 ## install: Instala dependencias de Composer dentro del contenedor backend
 install:
