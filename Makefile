@@ -176,12 +176,19 @@ portainer-url:
 
 ## clean: Limpia contenedores, volúmenes e imágenes
 clean:
-	@echo "$(RED)⚠️  ¿Estás seguro de eliminar todos los contenedores y volúmenes? [y/N]$(NC)"
+	@echo "$(RED)⚠️  ¿Estás seguro de eliminar TODOS los contenedores, volúmenes e imágenes? [y/N]$(NC)"
 	@read -p "" confirm; \
 	if [ "$$confirm" = "y" ] || [ "$$confirm" = "Y" ]; then \
-		echo "$(YELLOW)🧹 Limpiando...$(NC)"; \
-		docker compose -f compose.yml down -v; \
-		echo "$(GREEN)✓ Limpieza completada$(NC)"; \
+		echo "$(YELLOW)🧹 Limpiando producción...$(NC)"; \
+		docker compose -f compose.yml down -v --remove-orphans; \
+		echo "$(YELLOW)🧹 Limpiando desarrollo...$(NC)"; \
+		docker compose -f compose.dev.yml down -v --remove-orphans 2>/dev/null || true; \
+		echo "$(YELLOW)🧹 Eliminando imágenes del proyecto...$(NC)"; \
+		docker images | grep proyecto-llaves | awk '{print $$3}' | xargs -r docker rmi -f 2>/dev/null || true; \
+		docker images | grep llaves-frontend-builder | awk '{print $$3}' | xargs -r docker rmi -f 2>/dev/null || true; \
+		echo "$(YELLOW)🧹 Limpiando volúmenes huérfanos...$(NC)"; \
+		docker volume prune -f; \
+		echo "$(GREEN)✓ Limpieza completa terminada$(NC)"; \
 	else \
 		echo "$(YELLOW)Operación cancelada$(NC)"; \
 	fi
