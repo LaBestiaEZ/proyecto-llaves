@@ -56,7 +56,7 @@ help:
 ## up: Levanta toda la infraestructura en segundo plano
 up:
 	@echo "$(YELLOW)🚀 Levantando infraestructura...$(NC)"
-	docker compose -f compose.yml up -d
+	DOCKER_BUILDKIT=1 docker compose -f compose.yml up -d
 	@echo "$(GREEN)✓ Infraestructura levantada correctamente$(NC)"
 	@echo ""
 	@echo "$(YELLOW)📍 Servicios disponibles:$(NC)"
@@ -79,7 +79,7 @@ restart: down up
 ## build: Construye las imágenes Docker
 build:
 	@echo "$(YELLOW)🔨 Construyendo imágenes...$(NC)"
-	docker compose -f compose.yml build --no-cache
+	DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 docker compose -f compose.yml build --no-cache
 	@echo "$(GREEN)✓ Imágenes construidas$(NC)"
 
 ## build-frontend: Compila el frontend de Angular
@@ -104,9 +104,9 @@ rebuild:
 	@echo "$(YELLOW)   Bajando contenedores...$(NC)"
 	@docker compose -f compose.yml down -v
 	@echo "$(YELLOW)   Limpiando caché de Docker...$(NC)"
-	@docker compose -f compose.yml build --no-cache
+	@DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 docker compose -f compose.yml build --no-cache
 	@echo "$(YELLOW)   Levantando servicios...$(NC)"
-	@docker compose -f compose.yml up -d
+	@DOCKER_BUILDKIT=1 docker compose -f compose.yml up -d
 	@echo "$(GREEN)✓ Reconstrucción completa terminada$(NC)"
 	@echo ""
 	@make ps
@@ -200,7 +200,7 @@ clean:
 ## dev-up: Levanta entorno de desarrollo (sin portainer/ngrok)
 dev-up:
 	@echo "$(YELLOW)🚀 Levantando entorno de DESARROLLO...$(NC)"
-	docker compose -f compose.dev.yml up -d
+	DOCKER_BUILDKIT=1 docker compose -f compose.dev.yml up -d
 	@echo "$(GREEN)✓ Entorno de desarrollo levantado$(NC)"
 	@echo ""
 	@echo "$(YELLOW)📍 Servicios disponibles:$(NC)"
@@ -222,7 +222,7 @@ dev-restart: dev-down dev-up
 ## dev-build: Construye las imágenes para desarrollo
 dev-build:
 	@echo "$(YELLOW)🔨 Construyendo imágenes de desarrollo...$(NC)"
-	docker compose -f compose.dev.yml build --no-cache
+	DOCKER_BUILDKIT=1 COMPOSE_DOCKER_CLI_BUILD=1 docker compose -f compose.dev.yml build --no-cache
 	@echo "$(GREEN)✓ Imágenes de desarrollo construidas$(NC)"
 
 ## dev-ps: Muestra el estado de los contenedores de desarrollo

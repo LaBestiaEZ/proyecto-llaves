@@ -44,29 +44,20 @@ services:
     networks:
       - llaves-network
 
-  # Frontend Builder - Compila Angular con Node.js 22
-  frontend-builder:
+  # Nginx - Proxy Inverso y Servidor Web con Frontend integrado
+  webserver:
     build:
       context: .
-      dockerfile: docker/frontend/Dockerfile
-    container_name: llaves-frontend-builder
-    volumes:
-      - frontend_dist:/app/dist
-
-  # Nginx - Proxy Inverso y Servidor Web
-  webserver:
-    image: nginx:alpine
+      dockerfile: docker/nginx/Dockerfile
     container_name: llaves-webserver
     restart: unless-stopped
     volumes:
       - ./backend:/var/www/backend
-      - frontend_dist:/usr/share/nginx/html:ro
       - ./docker/nginx/nginx.prod.conf:/etc/nginx/conf.d/default.conf
     ports:
       - "${WEBSERVER_PORT:-80}:80"
     depends_on:
       - backend
-      - frontend-builder
     networks:
       - llaves-network
 
@@ -106,8 +97,6 @@ volumes:
   postgres_data:
     driver: local
   portainer_data:
-    driver: local
-  frontend_dist:
     driver: local
 
 networks:
