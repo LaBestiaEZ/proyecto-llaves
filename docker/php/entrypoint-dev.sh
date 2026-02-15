@@ -4,6 +4,15 @@ set -e
 echo "Installing Composer dependencies (with dev)..."
 composer install --optimize-autoloader
 
+echo "Generating JWT keys..."
+if [ ! -f config/jwt/private.pem ]; then
+    mkdir -p config/jwt
+    php bin/console lexik:jwt:generate-keypair --skip-if-exists
+    echo "JWT keys generated successfully"
+else
+    echo "JWT keys already exist"
+fi
+
 echo "Creating database if not exists..."
 php bin/console doctrine:database:create --if-not-exists --no-interaction
 
